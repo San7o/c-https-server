@@ -35,10 +35,11 @@ The server-side-rendering module will parse .ssr
 files, where code is delimited by the characters
 "%{" to open and "}%" to close, as shown in the
 following example:
-```
+
+#+BEGIN_SRC html
 <body>
     %{ for(int i = 0; i < 10; ++i) { }%
         <p> Iteration No. %{ INT(i) }% </p>
     %{ } }%
 </body>
-```
+#+END_SRC
