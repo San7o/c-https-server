@@ -22,13 +22,14 @@
  * SOFTWARE.
  */
 
-#include <chttps/server.h>
+#ifndef _CHTTPS_SERVER_H
+#define _CHTTPS_SERVER_H
 
-#define LISTEN_IP "0.0.0.0"
-#define PORT 6969
-#define LISTEN_BUFFER_SIZE 50
+#include <chttps/types.h>
 
-int main(void)
-{
-  return chttps_start_server(LISTEN_IP, PORT, LISTEN_BUFFER_SIZE);
-}
+CHTTPS_ERROR chttps_start_server(
+		 const char* listener_ip,  /* The ip to listen to */
+		 chttps_port_t port,       /* Port to listen to   */
+		 int waiting_queue_size);  /* Waiting queue for new clients */
+
+#endif

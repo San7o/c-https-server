@@ -22,13 +22,12 @@
  * SOFTWARE.
  */
 
-#include <chttps/server.h>
+#ifndef _CHTTPS_MACROS_H
+#define _CHTTPS_MACROS_H
 
-#define LISTEN_IP "0.0.0.0"
-#define PORT 6969
-#define LISTEN_BUFFER_SIZE 50
+#include <stdlib.h>     /* exit  */
 
-int main(void)
-{
-  return chttps_start_server(LISTEN_IP, PORT, LISTEN_BUFFER_SIZE);
-}
+#define handle_error(msg) \
+  do { perror(msg); exit(EXIT_FAILURE); } while (0)
+
+#endif

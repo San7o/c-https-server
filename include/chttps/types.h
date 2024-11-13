@@ -22,13 +22,17 @@
  * SOFTWARE.
  */
 
-#include <chttps/server.h>
+#ifndef _CHTTPS_TYPES_H
+#define _CHTTPS_TYPES_H
 
-#define LISTEN_IP "0.0.0.0"
-#define PORT 6969
-#define LISTEN_BUFFER_SIZE 50
+#include <netinet/in.h>  /* in_port_t */
 
-int main(void)
+typedef enum 
 {
-  return chttps_start_server(LISTEN_IP, PORT, LISTEN_BUFFER_SIZE);
-}
+  CHTTPS_NO_ERROR = 0,
+  _CHTTPS_ERROR_MAX
+} CHTTPS_ERROR;
+
+typedef in_port_t chttps_port_t; 
+
+#endif
