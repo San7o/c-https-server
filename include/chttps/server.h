@@ -27,9 +27,18 @@
 
 #include <chttps/types.h>
 
-CHTTPS_ERROR chttps_start_server(
-		 const char* listener_ip,  /* The ip to listen to */
-		 chttps_port_t port,       /* Port to listen to   */
-		 int waiting_queue_size);  /* Waiting queue for new clients */
+#ifdef __cplusplus
+extern "C" {
+#endif
 
+CHTTPS_ERROR chttps_server_init(chttps_config *conf,
+				chttps_server *server);
+
+CHTTPS_ERROR chttps_server_listen(chttps_server *server);
+CHTTPS_ERROR chttps_server_close(chttps_server *server);
+
+#ifdef __cplusplus
+}
+#endif
+  
 #endif

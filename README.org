@@ -1,8 +1,6 @@
 * chttps
 
-** An https server
-
-This project is an implementation of a TCP + TLS
+Chttps is an implementation of a TCP + TLS
 server accepting the http/1.1 protocol as defined
 in RFC 2616, somewhat similar to the Apache web server.
 A secondary goal for the project is to implement
@@ -14,8 +12,6 @@ Apache web server. Namely, the modular nature of
 Apache and the high number of concurrent connections
 provided by Nginx will guide the design of this
 server.
-
-** An UNIX server
 
 The server will use UNIX sockets to handle multiple
 TCP connections, using the OpenSSH library for TLS.

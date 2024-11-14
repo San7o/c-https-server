@@ -22,13 +22,42 @@
  * SOFTWARE.
  */
 
-#include <chttps/server.h>
+#include <chttps/chttps.h>  /* Amalgamated header */
+#include <stdlib.h>         /* exit  */
+#include <stdio.h>
 
+/* Default values */
 #define LISTEN_IP "0.0.0.0"
 #define PORT 6969
-#define LISTEN_BUFFER_SIZE 50
+#define WAITING_QUEUE_SIZE 50
 
+#define handle_error(err) \
+  do { fprintf(stderr, "Error: %s\n", chttps_err_str(-err)); \
+    exit(EXIT_FAILURE); } while (0)
+
+/*
+ * Deamon main
+ */
 int main(void)
 {
-  return chttps_start_server(LISTEN_IP, PORT, LISTEN_BUFFER_SIZE);
+  CHTTPS_ERROR err;
+  chttps_config config = {
+    .listen_ip = LISTEN_IP,
+    .port      = PORT,
+    .waiting_queue_size = WAITING_QUEUE_SIZE,
+  };
+  chttps_server server = {};
+  err = chttps_server_init(&config, &server);
+  if (err != CHTTPS_NO_ERROR)
+    handle_error(err);
+
+  err = chttps_server_listen(&server);
+  if (err != CHTTPS_NO_ERROR)
+    handle_error(err);
+
+  chttps_server_close(&server);
+  if (err != CHTTPS_NO_ERROR)
+    handle_error(err);
+
+  return 0;
 }

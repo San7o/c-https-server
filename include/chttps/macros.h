@@ -25,9 +25,12 @@
 #ifndef _CHTTPS_MACROS_H
 #define _CHTTPS_MACROS_H
 
-#include <stdlib.h>     /* exit  */
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-#define handle_error(msg) \
-  do { perror(msg); exit(EXIT_FAILURE); } while (0)
+#ifdef __cplusplus
+}
+#endif
 
 #endif

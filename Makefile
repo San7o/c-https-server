@@ -14,14 +14,16 @@ CCFLAGS       = ${COMPILE_FLAGS} ${INCLUDE_FLAGS}
 
 default: ${BUILD_DIR}/chttpsd
 
-$(BUILD_DIR)/libchttps.so: builddir $(BUILD_DIR)/server.o
-	${CC} $(BUILD_DIR)/server.o -o ${BUILD_DIR}/libchttps.so $(CCFLAGS) -shared -fPIC
+$(BUILD_DIR)/libchttps.so: builddir $(BUILD_DIR)/server.o $(BUILD_DIR)/util.o
+	${CC} $(BUILD_DIR)/server.o $(BUILD_DIR)/util.o -o ${BUILD_DIR}/libchttps.so $(CCFLAGS) -shared -fPIC
 
 builddir:
 	mkdir ${BUILD_DIR} 2>/dev/null || echo ""
 
 $(BUILD_DIR)/server.o: $(LIB_DIR)/server.c
 	${CC} -c ${LIB_DIR}/server.c -o ${BUILD_DIR}/server.o ${CCFLAGS}
+$(BUILD_DIR)/util.o: $(LIB_DIR)/util.c
+	${CC} -c ${LIB_DIR}/util.c -o ${BUILD_DIR}/util.o ${CCFLAGS}
 
 ## DAEMON
 

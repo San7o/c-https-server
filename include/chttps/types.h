@@ -27,12 +27,41 @@
 
 #include <netinet/in.h>  /* in_port_t */
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef enum 
 {
   CHTTPS_NO_ERROR = 0,
+  CHTTPS_NULL_CONF_ERROR,
+  CHTTPS_SERVER_IS_NULL_ERROR,
+  CHTTPS_IP_CONVERSION_ERROR,
+  CHTTPS_SOCKET_ERROR,
+  CHTTPS_BIND_ERROR,
+  CHTTPS_LISTEN_ERROR,
+  CHTTPS_ACCEPT_CONNECTION_ERROR,
+  CHTTPS_CLOSE_SERVER_SOCKET_ERROR,
   _CHTTPS_ERROR_MAX
 } CHTTPS_ERROR;
 
 typedef in_port_t chttps_port_t; 
+
+typedef struct
+{
+  const char *listen_ip;  /* The IP to listen from */
+  chttps_port_t port;     /* Port to listen from   */
+  int waiting_queue_size; /* Waiting queue for new connections */
+} chttps_config;
+
+typedef struct
+{
+  int sfd;
+  int waiting_queue_size;
+} chttps_server;
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
