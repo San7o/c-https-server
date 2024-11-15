@@ -32,7 +32,9 @@ extern "C" {
 #endif
 
 char* chttps_err_str(chttps_error err);
+
 char* chttps_log_level_str(chttps_log_level level);
+
 chttps_config chttps_config_default();
 
 #ifdef __cplusplus

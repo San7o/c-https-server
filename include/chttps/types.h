@@ -27,11 +27,15 @@
 
 #include <netinet/in.h>  /* in_port_t   */
 #include <sys/socket.h>  /* sockaddr_in */ 
+#include <stdbool.h>     /* for bools   */
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
+/*
+ * Tip: Convert the enum to a string with chttps_err_str()
+ */
 typedef enum 
 {
   CHTTPS_NO_ERROR = 0,
@@ -47,6 +51,9 @@ typedef enum
   _CHTTPS_ERROR_MAX
 } chttps_error;
 
+/*
+ * Tip: Convert the enum to a string with chttps_log_level_str()
+ */
 typedef enum
 {
   CHTTPS_DEBUG = 0,
@@ -54,11 +61,12 @@ typedef enum
   CHTTPS_WARN,
   CHTTPS_ERR,
   CHTTPS_OUT,
-  CHTTPS_DISABLED,
-  _CHTTPS_LOG_LEVEL_MAX
+  CHTTPS_DISABLED,       /* This is guaranteed to not print anything */
+  _CHTTPS_LOG_LEVEL_MAX  /* as well as this                          */
 } chttps_log_level;
-  
-typedef in_port_t chttps_port_t; 
+
+typedef uint16_t chttps_port_t; 
+
 /* Alias of sockaddr
  *  struct sockaddr {
  *    sa_family_t sa_family; // Address family
@@ -67,25 +75,50 @@ typedef in_port_t chttps_port_t;
  */
 typedef struct sockaddr chttps_addr;
 
+/*
+ * Configuration for the server.
+ * This struct is stored inside the server after
+ * chttps_server_init() is called. Lots of functions
+ * will change their behaviour based on those configs.
+ */
 typedef struct
 {
-  chttps_log_level log_level;  /* Output log level */
   const char *listen_ip;       /* The IP to listen from */
   chttps_port_t port;          /* Port to listen from   */
+  chttps_log_level log_level;  /* Output log level */
   int waiting_queue_size;      /* Waiting queue for new connections */
+  size_t max_connections;      /* Maximum number of open connections */
 } chttps_config;
 
+/*
+ * Struct containing the server instance
+ */
 typedef struct
 {
   int sfd;                     /* Server file descriptor */
   chttps_config conf;          /* Server configuration   */
 } chttps_server;
 
+/*
+ * Struct containing a single client instance
+ */
 typedef struct
 {
   int cfd;                     /* Client file descriptor */
   chttps_addr addr;            /* Client address struct  */
 } chttps_client;
+
+/*
+ * This struct contains an array of connected clients
+ * and another array of booleans to know if a position
+ * in the client's array is available to use.
+ */
+typedef struct
+{
+  size_t len;                /* The len of the two arrays */
+  chttps_client **clients;
+  bool *is_available;
+} chttps_connections;
   
 #ifdef __cplusplus
 }

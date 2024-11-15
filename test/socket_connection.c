@@ -11,7 +11,6 @@
 /* Default values */
 #define LISTEN_IP "0.0.0.0"
 #define PORT 6969
-#define WAITING_QUEUE_SIZE 50
 
 #define chttps_handle_error(err) \
   do { fprintf(stderr, "Error in test socket_connection: %s\n", chttps_err_str(-err)); \
@@ -24,12 +23,10 @@
 static void *server(void*)
 {
   chttps_error err;
-  chttps_config config = {
-    .log_level          = CHTTPS_DISABLED,
-    .listen_ip          = LISTEN_IP,
-    .port               = PORT,
-    .waiting_queue_size = WAITING_QUEUE_SIZE,
-  };
+  chttps_config config = chttps_config_default();
+  config.log_level          = CHTTPS_DISABLED;
+  config.listen_ip          = LISTEN_IP;
+  config.port               = PORT;
   chttps_server my_server = {};
   err = chttps_server_init(&my_server, &config);
   if (err != CHTTPS_NO_ERROR)

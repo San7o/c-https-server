@@ -22,12 +22,17 @@
  * SOFTWARE.
  */
 
-#include <chttps/chttps.h>  /* Amalgamated header */
-#include <stdlib.h>         /* exit  */
-#include <stdio.h>
+#include <stdlib.h>         /* exit               */
+#include <stdio.h>          /* fprintf            */
+#include <signal.h>         /* UNIX signals       */
 
-#define handle_error(err) \
+#include <chttps/chttps.h>  /* Amalgamated header */
+
+#define chttps_handle_error(err) \
   do { fprintf(stderr, "Error: %s\n", chttps_err_str(-err)); \
+    exit(EXIT_FAILURE); } while (0)
+#define handle_error(err) \
+  do { fprintf(stderr, "Error: %s\n", err); \
     exit(EXIT_FAILURE); } while (0)
 
 /*
@@ -35,11 +40,21 @@
  */
 int main(void)
 {
+  /* Setup signals */
+  int sig_err;
+  const struct sigaction siga = {
+    .sa_handler = chttps_signal_close,
+  };
+  sig_err = sigaction(SIGTERM, &siga, NULL);
+  if (sig_err)
+    handle_error("sigaction");
+  
+  /* Initialize server */
   chttps_error err;
   chttps_server server = {};
   err = chttps_server_init(&server, NULL);
   if (err != CHTTPS_NO_ERROR)
-    handle_error(err);
+    chttps_handle_error(err);
 
   /*
   err = chttps_server_listen(&server);
@@ -49,7 +64,7 @@ int main(void)
 
   chttps_server_close(&server);
   if (err != CHTTPS_NO_ERROR)
-    handle_error(err);
+    chttps_handle_error(err);
 
   return 0;
 }

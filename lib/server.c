@@ -22,8 +22,7 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <sys/socket.h>
+#include <sys/socket.h> /* UNIX sockets    */
 #include <arpa/inet.h>  /* byte ordering   */
 #include <unistd.h>     /* close           */
 #include <stdlib.h>     /* malloc and free */
@@ -41,12 +40,15 @@ chttps_error chttps_server_init(chttps_server *server,
     return -CHTTPS_SERVER_IS_NULL_ERROR;
     
   if (conf == NULL)
-    {
-      chttps_config default_config = chttps_config_default();
-      memcpy(conf, &default_config, sizeof(chttps_config));
-    }
-    
-  memcpy(&server->conf, conf, sizeof(chttps_config));
+  {
+    chttps_config default_config = chttps_config_default();
+    memcpy(&server->conf, &default_config, sizeof(chttps_config));
+  }
+  else
+  {
+    memcpy(&server->conf, conf, sizeof(chttps_config));
+  }
+   
   server->sfd = socket(AF_INET, SOCK_STREAM, 0); /* tcp socket */
   if (server->sfd == 0) 
     return -CHTTPS_SOCKET_ERROR;
@@ -56,14 +58,14 @@ chttps_error chttps_server_init(chttps_server *server,
     return -CHTTPS_IP_CONVERSION_ERROR;
   struct sockaddr_in saddr = {
     /* sa_family_t    */ .sin_family = AF_INET,
-    /* in_port_t      */ .sin_port   = conf->port,
+    /* in_port_t      */ .sin_port   = server->conf.port,
     /* struct in_addr */ .sin_addr   = addr
   };
 
   if (bind(server->sfd, (struct sockaddr*) &saddr, sizeof(saddr)) == -1)
     return -CHTTPS_BIND_ERROR;
 
-  chttps_info("Server Started", &server->conf);
+  chttps_info("Server started", &server->conf);
   return CHTTPS_NO_ERROR;
 }
 
@@ -85,6 +87,7 @@ chttps_error chttps_server_listen(chttps_server *server,
   if ((*client)->cfd == -1)
     return -CHTTPS_ACCEPT_CONNECTION_ERROR;
   
+  chttps_info("New client connected", &server->conf);
   return CHTTPS_NO_ERROR;
 }
 
@@ -96,5 +99,6 @@ chttps_error chttps_server_close(chttps_server *server)
   if (close(server->sfd) == -1)
     return -CHTTPS_CLOSE_SERVER_SOCKET_ERROR;
 
+  chttps_info("Server closed", &server->conf);
   return CHTTPS_NO_ERROR;
 }

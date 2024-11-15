@@ -75,10 +75,11 @@ char* chttps_log_level_str(chttps_log_level level)
 chttps_config chttps_config_default()
 {
   chttps_config conf = {
-    .log_level              = CHTTPS_INFO,
     .listen_ip              = "0.0.0.0",
     .port                   = 1234,
-    .waiting_queue_size     = 50,
+    .log_level              = CHTTPS_INFO,
+    .waiting_queue_size     = 64,
+    .max_connections        = 1024,
   };
   return conf;
 }

@@ -18,7 +18,7 @@ of this server will leverage on threads alone to
 handle sessions.
 
 Chttps is designed with modularity in mind. A request
-from a client gors through multiple configurable
+from a client goes through multiple configurable
 passes to allow greater modularity and customizability.
 
 ** SSR
@@ -35,3 +35,17 @@ following example:
     %{ } }%
 </body>
 #+END_SRC
+
+* Build
+
+The project currently uses a Makefile but will soon transition
+Its build system to Autoconf. For the mean time, run make to
+build both the library and the daemon
+```
+make
+```
+
+To run self tests, run the following:
+```
+make check
+```

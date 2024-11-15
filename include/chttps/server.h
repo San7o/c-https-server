@@ -31,11 +31,27 @@
 extern "C" {
 #endif
 
+/*
+ * Itinitalize the server for listening. You
+ * can pass an optional configuration pointer or
+ * a default value will be used (chttps_config_default()).
+ * Before passing a custom configuration, it is advised
+ * to initialize the default one and change the
+ * values that you want to change.
+ */
 chttps_error chttps_server_init(chttps_server *server,
                                 chttps_config *conf);
-
+/*
+ * Listen for client connection and return an allocated
+ * client struct. Remember to deallocate this when
+ * the session has ended.
+ */
 chttps_error chttps_server_listen(chttps_server *server,
 		  		  chttps_client **client);
+/*
+ * Remember to close the server or nightmares
+ * will hunt you.
+ */
 chttps_error chttps_server_close(chttps_server *server);
 
 #ifdef __cplusplus

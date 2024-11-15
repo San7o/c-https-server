@@ -11,5 +11,7 @@
 #include <chttps/server.h>
 #include <chttps/util.h>
 #include <chttps/logger.h>
+#include <chttps/signals.h>
+#include <chttps/connections.h>
 
 #endif
