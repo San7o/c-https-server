@@ -25,12 +25,52 @@
 #ifndef _CHTTPS_CONNECTIONS_H
 #define _CHTTPS_CONNECTIONS_H
 
+#include <stdlib.h>         /* malloc & free */
+
+#include <chttps/types.h>
+#include <chttps/logger.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
+/*
+ * This structure will be passed to each thread upon creation.
+ */
+typedef struct
+{
+  chttps_server* server;
+  chttps_client* client;
+} chttps_thread_info;
 
-  
+chttps_connections chttps_connections_init(const size_t max_connections);
+
+chttps_error chttps_connections_free(chttps_connections *connections);
+
+chttps_error chttps_add_connection(chttps_server *server,
+				   chttps_client *client);
+
+chttps_error chttps_remove_connection(chttps_connections *connections,
+				      chttps_client *client);
+/*
+ * Thread execution starts here for each client.
+ */
+static void *chttps_connection_thread(void* args)
+{
+  chttps_thread_info *info_ptr = (chttps_thread_info *) args;
+  chttps_thread_info info = *info_ptr;
+  free(info_ptr);
+  chttps_debug("Spawned connection thread", &(info.server->conf));
+
+  const char *ok_message = "OK\0";
+  ssize_t sent = send(info.client->cfd, ok_message, sizeof(ok_message), 0);
+  if (sent != sizeof(ok_message))
+    chttps_err("Error sending message to client", &(info.server->conf));
+
+  chttps_remove_connection(&(info.server->connections), info.client);
+  return NULL;
+}
+
 #ifdef __cplusplus
 }
 #endif

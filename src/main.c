@@ -56,11 +56,17 @@ int main(void)
   if (err != CHTTPS_NO_ERROR)
     chttps_handle_error(err);
 
-  /*
-  err = chttps_server_listen(&server);
-  if (err != CHTTPS_NO_ERROR)
-    handle_error(err);
-  */
+  /* Listen loop */
+  while(!(*chttps_get_stop()))
+    {
+      chttps_client *client;
+      err = chttps_server_listen(&server, &client);
+      if (err != CHTTPS_NO_ERROR)
+	chttps_handle_error(err);
+      err = chttps_add_connection(&server, client);
+      if (err)
+	chttps_handle_error(err);
+    }
 
   chttps_server_close(&server);
   if (err != CHTTPS_NO_ERROR)

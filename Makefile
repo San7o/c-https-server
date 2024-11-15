@@ -5,7 +5,7 @@ SOURCE_DIR     = ${PROJECT_DIR}/src
 TESTS_DIR      = ${PROJECT_DIR}/test
 
 CC             = gcc
-COMPILE_FLAGS  = -Wall -Wextra -Werror
+COMPILE_FLAGS  = -Wall -Wextra -Werror -Wno-unused-function
 INCLUDE_FLAGS  = -I ${PROJECT_DIR}/include
 CCFLAGS        = ${COMPILE_FLAGS} ${INCLUDE_FLAGS}
 
@@ -42,11 +42,13 @@ $(BUILD_DIR)/main.o: $(SOURCE_DIR)/main.c
 
 ## TESTS
 
-check: socket_connection_test
-socket_connection_test: ${BUILD_DIR}/libchttps.so 
+check: socket_connection_test connection_add_remove_test
+socket_connection_test: ${BUILD_DIR}/libchttps.so ${TESTS_DIR}/socket_connection.c
 	${CC} ${BUILD_DIR}/libchttps.so ${TESTS_DIR}/socket_connection.c -o ${BUILD_DIR}/socket_connection ${CCFLAGS} -pthread
-	${BUILD_DIR}/socket_connection || echo "Test Failed!!"
-
+	${BUILD_DIR}/socket_connection || echo "Test socket_connection Failed!!"
+connection_add_remove_test: ${BUILD_DIR}/libchttps.so  ${TESTS_DIR}/connection_add_remove.c
+	${CC} ${BUILD_DIR}/libchttps.so ${TESTS_DIR}/connection_add_remove.c -o ${BUILD_DIR}/connection_add_remove ${CCFLAGS} -pthread
+	${BUILD_DIR}/connection_add_remove || echo "Test connection_add_remove Failed!!"
 ## UTILITIES
 
 clean:

@@ -32,6 +32,7 @@
 #include <chttps/macros.h>
 #include <chttps/logger.h>
 #include <chttps/util.h>
+#include <chttps/connections.h>
 
 chttps_error chttps_server_init(chttps_server *server,
                                 chttps_config *conf)
@@ -52,6 +53,8 @@ chttps_error chttps_server_init(chttps_server *server,
   server->sfd = socket(AF_INET, SOCK_STREAM, 0); /* tcp socket */
   if (server->sfd == 0) 
     return -CHTTPS_SOCKET_ERROR;
+
+  server->connections = chttps_connections_init(server->conf.max_connections);
 
   struct in_addr addr;
   if (inet_aton(server->conf.listen_ip, &addr) == 0)  /* From char* IP to addr */
@@ -96,6 +99,11 @@ chttps_error chttps_server_close(chttps_server *server)
   if (server == NULL)
     return -CHTTPS_SERVER_IS_NULL_ERROR;
 
+  chttps_error err;
+  err = chttps_connections_free(&(server->connections));
+  if (err)
+    return err;
+  
   if (close(server->sfd) == -1)
     return -CHTTPS_CLOSE_SERVER_SOCKET_ERROR;
 

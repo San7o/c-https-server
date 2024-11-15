@@ -42,6 +42,14 @@ typedef enum
   CHTTPS_NULL_CONF_ERROR,
   CHTTPS_SERVER_IS_NULL_ERROR,
   CHTTPS_CLIENT_IS_NULL_ERROR,
+  CHTTPS_CONNECTIONS_IS_NULL_ERROR,
+  CHTTPS_CONNECTION_IS_NULL_ERROR,
+  CHTTPS_CONNECTIONS_FULL_ERROR,
+  CHTTPS_PTHREAD_ATTR_INIT_ERROR,
+  CHTTPS_PTHREAD_CREATE_ERROR,
+  CHTTPS_PTHREAD_JOIN_ERROR,
+  CHTTPS_PTHREAD_CANCEL_ERROR,
+  CHTTPS_REMOVE_CONNECTION_ERROR,
   CHTTPS_IP_CONVERSION_ERROR,
   CHTTPS_SOCKET_ERROR,
   CHTTPS_BIND_ERROR,
@@ -61,7 +69,7 @@ typedef enum
   CHTTPS_WARN,
   CHTTPS_ERR,
   CHTTPS_OUT,
-  CHTTPS_DISABLED,       /* This is guaranteed to not print anything */
+  CHTTPS_DISABLED,   /* This is guaranteed to not print anything */
   _CHTTPS_LOG_LEVEL_MAX  /* as well as this                          */
 } chttps_log_level;
 
@@ -91,15 +99,6 @@ typedef struct
 } chttps_config;
 
 /*
- * Struct containing the server instance
- */
-typedef struct
-{
-  int sfd;                     /* Server file descriptor */
-  chttps_config conf;          /* Server configuration   */
-} chttps_server;
-
-/*
  * Struct containing a single client instance
  */
 typedef struct
@@ -115,11 +114,22 @@ typedef struct
  */
 typedef struct
 {
-  size_t len;                /* The len of the two arrays */
+  size_t len;                  /* The len of the two arrays */
   chttps_client **clients;
+  pthread_t *threads;          /* Thread ID of each connection */
   bool *is_available;
 } chttps_connections;
   
+/*
+ * Struct containing the server instance
+ */
+typedef struct
+{
+  int sfd;                     /* Server file descriptor */
+  chttps_config conf;          /* Server configuration   */
+  chttps_connections connections; /* List of active/inactive connections */
+} chttps_server;
+
 #ifdef __cplusplus
 }
 #endif

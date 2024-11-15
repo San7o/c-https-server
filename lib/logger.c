@@ -33,7 +33,7 @@ void chttps_log(chttps_log_level level,
 {
   if (conf != NULL)
     {
-      if (level <= conf->log_level && conf->log_level < CHTTPS_DISABLED)
+      if (level >= conf->log_level && conf->log_level < CHTTPS_DISABLED)
 	printf("%s: %s\n", chttps_log_level_str(level),
 	       message);
     }

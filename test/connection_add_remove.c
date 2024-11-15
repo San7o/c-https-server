@@ -10,13 +10,14 @@
 
 /* Default values */
 #define LISTEN_IP "0.0.0.0"
-#define PORT 6969
+#define PORT 6970
+#define LOG_LEVEL CHTTPS_DISABLED
 
 #define chttps_handle_error(err) \
-  do { fprintf(stderr, "Error in test socket_connection: %s\n", chttps_err_str(-err)); \
+  do { fprintf(stderr, "Error in test connection_add_remove: %s\n", chttps_err_str(-err)); \
     exit(EXIT_FAILURE); } while (0)
 #define handle_error(err) \
-  do { fprintf(stderr, "Error in test socket_connection: %s\n", err); \
+  do { fprintf(stderr, "Error in test connection_add_remove: %s\n", err); \
     exit(EXIT_FAILURE); } while (0)
 
 /* Create a test server */
@@ -24,7 +25,7 @@ static void *server(void*)
 {
   chttps_error err;
   chttps_config config = chttps_config_default();
-  config.log_level          = CHTTPS_DISABLED;
+  config.log_level          = LOG_LEVEL;
   config.listen_ip          = LISTEN_IP;
   config.port               = PORT;
   chttps_server my_server = {};
@@ -32,30 +33,23 @@ static void *server(void*)
   if (err != CHTTPS_NO_ERROR)
     chttps_handle_error(err);
 
-  chttps_client *client; /* Client file descriptor */
+  chttps_client *client;
   err = chttps_server_listen(&my_server, &client);
   if (err != CHTTPS_NO_ERROR)
     chttps_handle_error(err);
 
-  /* Wait for a message */
-  char received_message[6];
-  ssize_t received = recv(client->cfd, received_message, 6, 0);
-  if (received != 6)
-    handle_error("Server Received wrong message size");
-  if (strcmp(received_message, "Hello"))
-    handle_error("Server Wrong message received");
-  
-  /* Send a resposnse */
-  const char *message = "OK\0";
-  ssize_t sent = send(client->cfd, message, sizeof(message), 0);
-  if (sent != sizeof(message))
-    handle_error("Server send");
+  err = chttps_add_connection(&my_server, client);
+  if (err)
+    chttps_handle_error(err);
+
+  /* Check that the connection has beed registered */
+  if (!my_server.connections.threads[0])
+    handle_error("Thread not registered");
   
   /* Cleanup */
   chttps_server_close(&my_server);
   if (err != CHTTPS_NO_ERROR)
     chttps_handle_error(err);
-  free(client);
   return NULL;
 }
 
@@ -77,12 +71,6 @@ void send_message(void)
   err = connect(sfd, (struct sockaddr*) &saddr, sizeof(saddr));
   if (err != 0)
     handle_error("Client connect");
-
-  /* Send a message */
-  const char *message = "Hello\0";
-  ssize_t sent = send(sfd, message, sizeof(message), 0);
-  if (sent != sizeof(message))
-    handle_error("Client send");
 
   /* Get response */
   char received_message[3];
