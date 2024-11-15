@@ -41,11 +41,13 @@ following example:
 The project currently uses a Makefile but will soon transition
 Its build system to Autoconf. For the mean time, run make to
 build both the library and the daemon
-```
+
+#+BEGIN_SRC bash
 make
-```
+#+END_SRC bash
 
 To run self tests, run the following:
-```
+
+#+BEGIN_SRC bash
 make check
-```
+#+END_SRC bash
