@@ -27,23 +27,32 @@
 #include <arpa/inet.h>  /* byte ordering   */
 #include <unistd.h>     /* close           */
 #include <stdlib.h>     /* malloc and free */
+#include <string.h>     /* memcpy          */
 
 #include <chttps/server.h>
 #include <chttps/macros.h>
+#include <chttps/logger.h>
+#include <chttps/util.h>
 
-CHTTPS_ERROR chttps_server_init(chttps_config *conf,
-				chttps_server *server)
+chttps_error chttps_server_init(chttps_server *server,
+                                chttps_config *conf)
 {
+  if (server == NULL)
+    return -CHTTPS_SERVER_IS_NULL_ERROR;
+    
   if (conf == NULL)
-    return -CHTTPS_NULL_CONF_ERROR;
-
-  server->waiting_queue_size = conf->waiting_queue_size;
+    {
+      chttps_config default_config = chttps_config_default();
+      memcpy(conf, &default_config, sizeof(chttps_config));
+    }
+    
+  memcpy(&server->conf, conf, sizeof(chttps_config));
   server->sfd = socket(AF_INET, SOCK_STREAM, 0); /* tcp socket */
   if (server->sfd == 0) 
     return -CHTTPS_SOCKET_ERROR;
 
   struct in_addr addr;
-  if (inet_aton(conf->listen_ip, &addr) == 0)  /* From char* IP to addr */
+  if (inet_aton(server->conf.listen_ip, &addr) == 0)  /* From char* IP to addr */
     return -CHTTPS_IP_CONVERSION_ERROR;
   struct sockaddr_in saddr = {
     /* sa_family_t    */ .sin_family = AF_INET,
@@ -54,37 +63,32 @@ CHTTPS_ERROR chttps_server_init(chttps_config *conf,
   if (bind(server->sfd, (struct sockaddr*) &saddr, sizeof(saddr)) == -1)
     return -CHTTPS_BIND_ERROR;
 
+  chttps_info("Server Started", &server->conf);
   return CHTTPS_NO_ERROR;
 }
 
-CHTTPS_ERROR chttps_server_listen(chttps_server *server)
+chttps_error chttps_server_listen(chttps_server *server,
+				  chttps_client **client)
 {
   if (server == NULL)
     return -CHTTPS_SERVER_IS_NULL_ERROR;
+  if (client == NULL)
+    return -CHTTPS_CLIENT_IS_NULL_ERROR;
     
-  if (listen(server->sfd, server->waiting_queue_size) == -1)
+  if (listen(server->sfd, server->conf.waiting_queue_size) == -1)
     return -CHTTPS_LISTEN_ERROR;
 
-  /*
-  while(1)
-    {
-  */
-  struct sockaddr_in client_addr;
-  socklen_t client_addr_len = sizeof(client_addr);
-  int cfd = accept(server->sfd, (struct sockaddr *) &client_addr,
+  *client = malloc(sizeof(chttps_client));
+  socklen_t client_addr_len = sizeof((*client)->addr);
+  (*client)->cfd = accept(server->sfd, (struct sockaddr *) &(*client)->addr,
 		   &client_addr_len);
-  if (cfd == -1)
+  if ((*client)->cfd == -1)
     return -CHTTPS_ACCEPT_CONNECTION_ERROR;
-
-  printf("Hello World!\n");
-  /*
-    }
-  */
-
+  
   return CHTTPS_NO_ERROR;
 }
 
-CHTTPS_ERROR chttps_server_close(chttps_server *server)
+chttps_error chttps_server_close(chttps_server *server)
 {
   if (server == NULL)
     return -CHTTPS_SERVER_IS_NULL_ERROR;

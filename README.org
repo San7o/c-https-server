@@ -1,29 +1,25 @@
 * chttps
 
-Chttps is an implementation of a TCP + TLS
+Chttps is an implementation of a TCP/IP + TLS
 server accepting the http/1.1 protocol as defined
 in RFC 2616, somewhat similar to the Apache web server.
 A secondary goal for the project is to implement
 a server-side rendering engine.
 
-This project takes deliberate inspiration from two
-well known web servers in the industry: Nginx and
-Apache web server. Namely, the modular nature of
-Apache and the high number of concurrent connections
-provided by Nginx will guide the design of this
-server.
-
-The server will use UNIX sockets to handle multiple
-TCP connections, using the OpenSSH library for TLS.
-In Its first implementation, the server will create
-a new UNIX thread for each connection. While this is
-a simple and straight forward approach, It does not
+The server uses UNIX sockets to handle multiple
+TCP connections, using the OpenSSH library for TLS:
+the server creates a new UNIX thread for each connection.
+While this is a simple and straight forward approach, It does not
 scale to a high number of sessions as an UNIX thread
 Is an expensive resource. Nginx uses a master-slave
-architecture using a signal oriented design. This
-approach is more sophisticated and requires greater
-effort. The first implementation will leverage
-on threads alone to handle the many sessions.
+architecture via a signal oriented design, however the
+implementation is more involved. The first version
+of this server will leverage on threads alone to
+handle sessions.
+
+Chttps is designed with modularity in mind. A request
+from a client gors through multiple configurable
+passes to allow greater modularity and customizability.
 
 ** SSR
 

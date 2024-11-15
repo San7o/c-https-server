@@ -25,7 +25,8 @@
 #ifndef _CHTTPS_TYPES_H
 #define _CHTTPS_TYPES_H
 
-#include <netinet/in.h>  /* in_port_t */
+#include <netinet/in.h>  /* in_port_t   */
+#include <sys/socket.h>  /* sockaddr_in */ 
 
 #ifdef __cplusplus
 extern "C" {
@@ -36,6 +37,7 @@ typedef enum
   CHTTPS_NO_ERROR = 0,
   CHTTPS_NULL_CONF_ERROR,
   CHTTPS_SERVER_IS_NULL_ERROR,
+  CHTTPS_CLIENT_IS_NULL_ERROR,
   CHTTPS_IP_CONVERSION_ERROR,
   CHTTPS_SOCKET_ERROR,
   CHTTPS_BIND_ERROR,
@@ -43,23 +45,48 @@ typedef enum
   CHTTPS_ACCEPT_CONNECTION_ERROR,
   CHTTPS_CLOSE_SERVER_SOCKET_ERROR,
   _CHTTPS_ERROR_MAX
-} CHTTPS_ERROR;
+} chttps_error;
 
+typedef enum
+{
+  CHTTPS_DEBUG = 0,
+  CHTTPS_INFO,
+  CHTTPS_WARN,
+  CHTTPS_ERR,
+  CHTTPS_OUT,
+  CHTTPS_DISABLED,
+  _CHTTPS_LOG_LEVEL_MAX
+} chttps_log_level;
+  
 typedef in_port_t chttps_port_t; 
+/* Alias of sockaddr
+ *  struct sockaddr {
+ *    sa_family_t sa_family; // Address family
+ *    char        sa_data[]; // Socket address
+ *  };
+ */
+typedef struct sockaddr chttps_addr;
 
 typedef struct
 {
-  const char *listen_ip;  /* The IP to listen from */
-  chttps_port_t port;     /* Port to listen from   */
-  int waiting_queue_size; /* Waiting queue for new connections */
+  chttps_log_level log_level;  /* Output log level */
+  const char *listen_ip;       /* The IP to listen from */
+  chttps_port_t port;          /* Port to listen from   */
+  int waiting_queue_size;      /* Waiting queue for new connections */
 } chttps_config;
 
 typedef struct
 {
-  int sfd;
-  int waiting_queue_size;
+  int sfd;                     /* Server file descriptor */
+  chttps_config conf;          /* Server configuration   */
 } chttps_server;
 
+typedef struct
+{
+  int cfd;                     /* Client file descriptor */
+  chttps_addr addr;            /* Client address struct  */
+} chttps_client;
+  
 #ifdef __cplusplus
 }
 #endif

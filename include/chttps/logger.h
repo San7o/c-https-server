@@ -22,8 +22,8 @@
  * SOFTWARE.
  */
 
-#ifndef _CHTTPS_UTIL_H
-#define _CHTTPS_UTIL_H
+#ifndef _CHTTPS_LOGGER_H
+#define _CHTTPS_LOGGER_H
 
 #include <chttps/types.h>
 
@@ -31,9 +31,34 @@
 extern "C" {
 #endif
 
-char* chttps_err_str(chttps_error err);
-char* chttps_log_level_str(chttps_log_level level);
-chttps_config chttps_config_default();
+/*
+ * Log a message with the specified level
+ * An optional config file can be passed for advanced
+ * usage.
+ */
+void chttps_log(chttps_log_level level,
+		char *message,
+		chttps_config *conf);
+
+/*
+ * The following functions are wrappers around
+ * chttps_log, specifying the log level to have
+ * a shorter signature.
+ */
+void chttps_debug(char *message,
+		  chttps_config *conf);
+
+void chttps_info(char *message,
+		 chttps_config *conf);
+
+void chttps_warn(char *message,
+		 chttps_config *conf);
+
+void chttps_err(char *message,
+		chttps_config *conf);
+
+void chttps_out(char *message,
+	        chttps_config *conf);
 
 #ifdef __cplusplus
 }

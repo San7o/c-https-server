@@ -24,7 +24,7 @@
 
 #include <chttps/util.h>
 
-char* chttps_err_str(CHTTPS_ERROR err)
+char* chttps_err_str(chttps_error err)
 {
   switch(err)
     {
@@ -36,6 +36,8 @@ char* chttps_err_str(CHTTPS_ERROR err)
       return "CHTTPS_IP_CONVERSION_ERROR";
     case CHTTPS_SERVER_IS_NULL_ERROR:
       return "CHTTPS_SERVER_IS_NULL_ERROR";
+    case CHTTPS_CLIENT_IS_NULL_ERROR:
+      return "CHTTPS_CLIENT_IS_NULL_ERROR";
     case CHTTPS_SOCKET_ERROR:
       return "CHTTPS_SOCKET_ERROR";
     case CHTTPS_BIND_ERROR:
@@ -49,4 +51,34 @@ char* chttps_err_str(CHTTPS_ERROR err)
     default:
       return "ERROR_NOT_RECOGNISED";
     }
+}
+
+char* chttps_log_level_str(chttps_log_level level)
+{
+  switch(level)
+    {
+    case CHTTPS_DEBUG:
+      return "DEBUG";
+    case CHTTPS_INFO:
+      return "INFO";
+    case CHTTPS_WARN:
+      return "WARNING";
+    case CHTTPS_ERR:
+      return "ERROR";
+    case CHTTPS_OUT:
+      return "OUTPUT";
+    default:
+      return "UNKNOWN_LOG_LEVEL";
+    }
+}
+
+chttps_config chttps_config_default()
+{
+  chttps_config conf = {
+    .log_level              = CHTTPS_INFO,
+    .listen_ip              = "0.0.0.0",
+    .port                   = 1234,
+    .waiting_queue_size     = 50,
+  };
+  return conf;
 }

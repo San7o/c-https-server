@@ -10,5 +10,6 @@
 #include <chttps/macros.h>
 #include <chttps/server.h>
 #include <chttps/util.h>
+#include <chttps/logger.h>
 
 #endif

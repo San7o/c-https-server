@@ -26,11 +26,6 @@
 #include <stdlib.h>         /* exit  */
 #include <stdio.h>
 
-/* Default values */
-#define LISTEN_IP "0.0.0.0"
-#define PORT 6969
-#define WAITING_QUEUE_SIZE 50
-
 #define handle_error(err) \
   do { fprintf(stderr, "Error: %s\n", chttps_err_str(-err)); \
     exit(EXIT_FAILURE); } while (0)
@@ -40,20 +35,17 @@
  */
 int main(void)
 {
-  CHTTPS_ERROR err;
-  chttps_config config = {
-    .listen_ip = LISTEN_IP,
-    .port      = PORT,
-    .waiting_queue_size = WAITING_QUEUE_SIZE,
-  };
+  chttps_error err;
   chttps_server server = {};
-  err = chttps_server_init(&config, &server);
+  err = chttps_server_init(&server, NULL);
   if (err != CHTTPS_NO_ERROR)
     handle_error(err);
 
+  /*
   err = chttps_server_listen(&server);
   if (err != CHTTPS_NO_ERROR)
     handle_error(err);
+  */
 
   chttps_server_close(&server);
   if (err != CHTTPS_NO_ERROR)

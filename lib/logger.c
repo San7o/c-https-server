@@ -22,21 +22,57 @@
  * SOFTWARE.
  */
 
-#ifndef _CHTTPS_UTIL_H
-#define _CHTTPS_UTIL_H
+#include <stdio.h>
 
-#include <chttps/types.h>
+#include <chttps/logger.h>
+#include <chttps/util.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-char* chttps_err_str(chttps_error err);
-char* chttps_log_level_str(chttps_log_level level);
-chttps_config chttps_config_default();
-
-#ifdef __cplusplus
+void chttps_log(chttps_log_level level,
+		char *message,
+		chttps_config *conf)
+{
+  if (conf != NULL)
+    {
+      if (conf->log_level < CHTTPS_DISABLED)
+	printf("%s: %s\n", chttps_log_level_str(level),
+	       message);
+    }
+  else
+    {
+      if (level < CHTTPS_DISABLED)
+      printf("%s: %s\n", chttps_log_level_str(level),
+	      message);
+    }
+  return;
 }
-#endif
 
-#endif
+void chttps_debug(char *message,
+		  chttps_config *conf)
+{
+  chttps_log(CHTTPS_DEBUG, message, conf);
+  return;
+}
+void chttps_info(char *message,
+		 chttps_config *conf)
+{
+  chttps_log(CHTTPS_INFO, message, conf);
+  return;
+}
+void chttps_warn(char *message,
+		    chttps_config *conf)
+{
+  chttps_log(CHTTPS_WARN, message, conf);
+  return;
+}
+void chttps_err(char *message,
+		  chttps_config *conf)
+{
+  chttps_log(CHTTPS_ERR, message, conf);
+  return;
+}
+void chttps_out(char *message,
+		   chttps_config *conf)
+{
+  chttps_log(CHTTPS_OUT, message, conf);
+  return;
+}

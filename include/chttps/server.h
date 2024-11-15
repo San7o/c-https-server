@@ -31,11 +31,12 @@
 extern "C" {
 #endif
 
-CHTTPS_ERROR chttps_server_init(chttps_config *conf,
-				chttps_server *server);
+chttps_error chttps_server_init(chttps_server *server,
+                                chttps_config *conf);
 
-CHTTPS_ERROR chttps_server_listen(chttps_server *server);
-CHTTPS_ERROR chttps_server_close(chttps_server *server);
+chttps_error chttps_server_listen(chttps_server *server,
+		  		  chttps_client **client);
+chttps_error chttps_server_close(chttps_server *server);
 
 #ifdef __cplusplus
 }
