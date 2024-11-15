@@ -102,3 +102,23 @@ chttps_error chttps_server_close(chttps_server *server)
   chttps_info("Server closed", &server->conf);
   return CHTTPS_NO_ERROR;
 }
+
+pthread_mutex_t *chttps_get_stop_mutex()
+{
+  static pthread_mutex_t stop_mutex;
+  return &stop_mutex;
+}
+
+bool *chttps_get_stop()
+{
+  static bool stop = false;
+  return &stop;
+}
+
+void chttps_set_stop(bool stop)
+{
+  pthread_mutex_lock(chttps_get_stop_mutex());
+  bool *stop_ptr = chttps_get_stop();
+  *stop_ptr = stop;
+  pthread_mutex_unlock(chttps_get_stop_mutex());
+}

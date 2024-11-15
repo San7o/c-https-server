@@ -22,54 +22,20 @@
  * SOFTWARE.
  */
 
-#ifndef _CHTTPS_SERVER_H
-#define _CHTTPS_SERVER_H
-
-#include <pthread.h>       /* Mutexes */
-
-#include <chttps/types.h>
+#ifndef _CHTTPS_SIGNALS_H
+#define _CHTTPS_SIGNALS_H
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 /*
- * Itinitalize the server for listening. You
- * can pass an optional configuration pointer or
- * a default value will be used (chttps_config_default()).
- * Before passing a custom configuration, it is advised
- * to initialize the default one and change the
- * values that you want to change.
+ * Called after SIGTERM
  */
-chttps_error chttps_server_init(chttps_server *server,
-                                chttps_config *conf);
-/*
- * Listen for client connection and return an allocated
- * client struct. Remember to deallocate this when
- * the session has ended.
- */
-chttps_error chttps_server_listen(chttps_server *server,
-		  		  chttps_client **client);
-/*
- * Remember to close the server or nightmares
- * will hunt you.
- */
-chttps_error chttps_server_close(chttps_server *server);
+void chttps_signal_close(int);
 
-/*
- * Getter and setter for the global boolean
- * variable should_stop and their mutex. When stop is
- * set to true, all loops will safely end
- * their execution and correctly terminate the
- * program.
- * Note: set_stop is thread safe
- */
-pthread_mutex_t *chttps_get_stop_mutex();
-bool *chttps_get_stop();
-void chttps_set_stop(bool stop);
-  
 #ifdef __cplusplus
 }
 #endif
-  
+
 #endif
