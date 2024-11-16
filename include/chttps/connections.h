@@ -34,7 +34,7 @@
 extern "C" {
 #endif
 
-/*
+/**
  * This structure will be passed to each thread upon creation.
  */
 typedef struct
@@ -53,7 +53,7 @@ chttps_error chttps_add_connection(chttps_server *server,
 chttps_error chttps_remove_connection(chttps_connections *connections,
 				      chttps_client *client);
 
-/*
+/**
  * Thread execution starts here for each client.
  */
 static void *chttps_connection_thread(void* args)

@@ -31,6 +31,9 @@
 extern "C" {
 #endif
 
+/**
+ * Allocates a new route with given path
+ */
 chttps_error chttps_route_create(char* path, chttps_route **route);
 
 /* Setters */

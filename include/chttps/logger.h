@@ -31,7 +31,7 @@
 extern "C" {
 #endif
 
-/*
+/**
  * Log a message with the specified level
  * An optional config file can be passed for advanced
  * usage.
@@ -40,7 +40,7 @@ void chttps_log(chttps_log_level level,
 		char *message,
 		chttps_config *conf);
 
-/*
+/**
  * The following functions are wrappers around
  * chttps_log, specifying the log level to have
  * a shorter signature.

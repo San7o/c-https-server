@@ -33,6 +33,7 @@
 #include <chttps/logger.h>
 #include <chttps/util.h>
 #include <chttps/connections.h>
+#include <chttps/router.h>
 
 chttps_error chttps_server_init(chttps_server *server,
                                 chttps_config *conf)
@@ -54,6 +55,8 @@ chttps_error chttps_server_init(chttps_server *server,
   if (server->sfd == 0) 
     return -CHTTPS_SOCKET_ERROR;
 
+  server->router = chttps_router_init();
+  
   server->connections = chttps_connections_init(server->conf.max_connections);
 
   struct in_addr addr;
@@ -101,7 +104,11 @@ chttps_error chttps_server_close(chttps_server *server)
 
   chttps_error err;
   err = chttps_connections_free(&(server->connections));
-  if (err)
+  if (err != CHTTPS_NO_ERROR)
+    return err;
+
+  err = chttps_router_free(&(server->router));
+  if (err != CHTTPS_NO_ERROR)
     return err;
   
   if (close(server->sfd) == -1)

@@ -33,7 +33,7 @@
 extern "C" {
 #endif
 
-/*
+/**
  * Itinitalize the server for listening. You
  * can pass an optional configuration pointer or
  * a default value will be used (chttps_config_default()).
@@ -43,20 +43,20 @@ extern "C" {
  */
 chttps_error chttps_server_init(chttps_server *server,
                                 chttps_config *conf);
-/*
+/**
  * Listen for client connection with blocking and return
  * an allocated client struct. Remember to deallocate
  * this when the session has ended.
  */
 chttps_error chttps_server_listen(chttps_server *server,
 		  		  chttps_client **client);
-/*
+/**
  * Remember to close the server or nightmares
  * will hunt you.
  */
 chttps_error chttps_server_close(chttps_server *server);
 
-/*
+/**
  * Getter and setter for the global boolean
  * variable "stop" and Its mutex. When "stop" is
  * set to true, all loops will safely end

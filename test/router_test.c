@@ -37,7 +37,7 @@ int main(void)
   chttps_error err;
   
   /* Create router */
-  chttps_router *router = chttps_router_init();
+  chttps_router router = chttps_router_init();
 
   /* Create some routes */
   chttps_route *route1 = NULL;
@@ -54,22 +54,36 @@ int main(void)
     chttps_handle_error(err);
 
   /* Register the routes */
-  err = chttps_router_add(router, route1);
+  err = chttps_router_add(&router, route1);
   if (err != CHTTPS_NO_ERROR)
     chttps_handle_error(err);
-  err = chttps_router_add(router, route2);
+  err = chttps_router_add(&router, route2);
   if (err != CHTTPS_NO_ERROR)
     chttps_handle_error(err);
-  err = chttps_router_add(router, route3);
+  err = chttps_router_add(&router, route3);
   if (err != CHTTPS_NO_ERROR)
     chttps_handle_error(err);
 
   /* checks */
-  if (router->registered_routes != 3)
+  if (router.registered_routes != 3)
     handle_error("Number of registered routes is incorrect");
 
+  chttps_route *match1;
+  err = chttps_router_match(&router, "/admin", &match1);
+  if (err != CHTTPS_NO_ERROR)
+    chttps_handle_error(err);
+  if (match1 != route3)
+    handle_error("Match1: Routes do not match");
+
+  chttps_route *match2;
+  err = chttps_router_match(&router, "/profile", &match2);
+  if (err == CHTTPS_NO_ERROR)
+    handle_error("Match2: Result should be error");
+  if (match2 != NULL)
+    handle_error("Match2: Output should be NULL");
+
   /* Cleanup */
-  chttps_router_free(router);
+  chttps_router_free(&router);
 
   return 0;
 }

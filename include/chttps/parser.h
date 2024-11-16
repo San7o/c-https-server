@@ -31,13 +31,13 @@
 extern "C" {
 #endif
 
-/*
+/**
  * Parse a request string into an allocated chttps_request.
  */
 chttps_error chttps_parse_request(char* request,
 				  chttps_request **out);
 
-/*
+/**
  * Generate an allocated response string from chttps_response.
  */
 chttps_error chttps_create_response(chttps_response *res,

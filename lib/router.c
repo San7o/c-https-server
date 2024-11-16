@@ -24,13 +24,14 @@
 
 #include <stddef.h>            /* NULL          */
 #include <stdlib.h>            /* malloc & free */
+#include <string.h>            /* strcmp        */
 
 #include <chttps/router.h>
 
-chttps_router *chttps_router_init()
+chttps_router chttps_router_init()
 {
-  chttps_router *router = malloc(sizeof(chttps_router));
-  router->registered_routes = 0;
+  chttps_router router = {};
+  router.registered_routes = 0;
   return router;
 }
 
@@ -41,7 +42,6 @@ chttps_error chttps_router_free(chttps_router *router)
 
   for (size_t i = 0; i < router->registered_routes; ++i)
     free(router->routes[i]);
-  free(router);
   return CHTTPS_NO_ERROR;
 }
 
@@ -60,4 +60,34 @@ chttps_error chttps_router_add(chttps_router *router,
       return CHTTPS_NO_ERROR;
     }
   return -CHTTPS_ROUTER_FULL_ERROR;
+}
+
+chttps_error chttps_router_match(chttps_router *router,
+		                 char* path, chttps_route **result)
+{
+  if (router == NULL)
+    {
+      *result = NULL;
+      return -CHTTPS_ROUTER_IS_NULL_ERROR;
+    }
+  if (path == NULL)
+    {
+      *result = NULL;
+      return -CHTTPS_PARSE_WRONG_URI_ERROR;
+    }
+  if (result == NULL)
+    {
+      *result = NULL;
+      return -CHTTPS_ROUTE_IS_NULL_ERROR;
+    }
+  
+  for (size_t i = 0; i < router->registered_routes; ++i)
+    if (strcmp(router->routes[i]->path, path) == 0)
+      {
+	*result = router->routes[i];
+	return CHTTPS_NO_ERROR;
+      }
+
+  *result = NULL;
+  return -CHTTPS_ROUTER_NO_MATCH_ERROR;
 }

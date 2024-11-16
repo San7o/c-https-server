@@ -31,12 +31,18 @@
 extern "C" {
 #endif
 
-chttps_router *chttps_router_init();
+/**
+ * Does not allocate anything
+ */
+chttps_router chttps_router_init();
 
 chttps_error chttps_router_free(chttps_router *router);
 
 chttps_error chttps_router_add(chttps_router *router,
 			       chttps_route *route);
+
+chttps_error chttps_router_match(chttps_router *router,
+		                 char* path, chttps_route **result);
   
 #ifdef __cplusplus
 }

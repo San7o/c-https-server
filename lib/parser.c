@@ -79,7 +79,7 @@ chttps_error chttps_parse_request(char* request,
 chttps_error chttps_create_response(chttps_response *res, char** out)
 {
   if (res == NULL || out == NULL)
-    return -CHTTPS_RESPONCE_IS_NULL_ERROR;
+    return -CHTTPS_RESPONSE_IS_NULL_ERROR;
 
   *out = malloc(sizeof(chttps_response_header)+res->body_len);
 

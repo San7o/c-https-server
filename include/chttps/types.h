@@ -36,7 +36,7 @@
 extern "C" {
 #endif
 
-/*
+/**
  * Tip: Convert the enum to a string with chttps_err_str()
  */
 typedef enum 
@@ -55,10 +55,11 @@ typedef enum
   CHTTPS_PARSE_WRONG_METHOD_ERROR,
   CHTTPS_PARSE_WRONG_URI_ERROR,
   CHTTPS_PARSE_WRONG_VERSION_ERROR,
-  CHTTPS_RESPONCE_IS_NULL_ERROR,
+  CHTTPS_RESPONSE_IS_NULL_ERROR,
   CHTTPS_ROUTE_IS_NULL_ERROR,
   CHTTPS_ROUTER_IS_NULL_ERROR,
   CHTTPS_ROUTER_FULL_ERROR,
+  CHTTPS_ROUTER_NO_MATCH_ERROR,
   CHTTPS_REMOVE_CONNECTION_ERROR,
   CHTTPS_IP_CONVERSION_ERROR,
   CHTTPS_SOCKET_ERROR,
@@ -70,7 +71,7 @@ typedef enum
 
 } chttps_error;
 
-/*
+/**
  * Tip: Convert the enum to a string with chttps_log_level_str()
  */
 typedef enum
@@ -84,72 +85,6 @@ typedef enum
   _CHTTPS_LOG_LEVEL_MAX  /* as well as this                          */
 
 } chttps_log_level;
-
-  
-/* ====================================
- * CONNECTION TYPES
- * ==================================== */
-  
-typedef uint16_t chttps_port_t; 
-
-/* Alias of sockaddr
- *  struct sockaddr {
- *    sa_family_t sa_family; // Address family
- *    char        sa_data[]; // Socket address
- *  };
- */
-typedef struct sockaddr chttps_addr;
-
-/*
- * Configuration for the server.
- * This struct is stored inside the server after
- * chttps_server_init() is called. Lots of functions
- * will change their behaviour based on those configs.
- */
-typedef struct
-{
-  const char* listen_ip;       /* The IP to listen from */
-  chttps_port_t port;          /* Port to listen from   */
-  chttps_log_level log_level;  /* Output log level */
-  int waiting_queue_size;      /* Waiting queue for new connections */
-  size_t max_connections;      /* Maximum number of open connections */
-
-} chttps_config;
-
-/*
- * Struct containing a single client instance
- */
-typedef struct
-{
-  int cfd;                     /* Client file descriptor */
-  chttps_addr addr;            /* Client address struct  */
-
-} chttps_client;
-
-/*
- * This struct contains an array of connected clients
- * and another array of booleans to know if a position
- * in the client's array is available to use.
- */
-typedef struct
-{
-  size_t len;                  /* The len of the two arrays */
-  chttps_client **clients;
-  pthread_t *threads;          /* Thread ID of each connection */
-  bool *is_available;
-
-} chttps_connections;
-  
-/*
- * Struct containing the server instance
- */
-typedef struct
-{
-  int sfd;                     /* Server file descriptor */
-  chttps_config conf;          /* Server configuration   */
-  chttps_connections connections; /* List of active/inactive connections */
-
-} chttps_server;
 
   
 /* =========================================
@@ -185,7 +120,7 @@ typedef struct
 
 } chttps_request;
 
-/*
+/**
  * Note: use chttps_code_str() to convert the status code
  * to string.
  */
@@ -243,6 +178,73 @@ typedef struct
   chttps_route *routes[CHTTPS_MAX_ROUTES];
 
 } chttps_router;
+
+  
+/* ====================================
+ * CONNECTION TYPES
+ * ==================================== */
+  
+typedef uint16_t chttps_port_t; 
+
+/* Alias of sockaddr
+ *  struct sockaddr {
+ *    sa_family_t sa_family; // Address family
+ *    char        sa_data[]; // Socket address
+ *  };
+ */
+typedef struct sockaddr chttps_addr;
+
+/**
+ * Configuration for the server.
+ * This struct is stored inside the server after
+ * chttps_server_init() is called. Lots of functions
+ * will change their behaviour based on those configs.
+ */
+typedef struct
+{
+  const char* listen_ip;       /* The IP to listen from */
+  chttps_port_t port;          /* Port to listen from   */
+  chttps_log_level log_level;  /* Output log level */
+  int waiting_queue_size;      /* Waiting queue for new connections */
+  size_t max_connections;      /* Maximum number of open connections */
+
+} chttps_config;
+
+/**
+ * Struct containing a single client instance
+ */
+typedef struct
+{
+  int cfd;                     /* Client file descriptor */
+  chttps_addr addr;            /* Client address struct  */
+
+} chttps_client;
+
+/**
+ * This struct contains an array of connected clients
+ * and another array of booleans to know if a position
+ * in the client's array is available to use.
+ */
+typedef struct
+{
+  size_t len;                  /* The len of the two arrays */
+  chttps_client **clients;
+  pthread_t *threads;          /* Thread ID of each connection */
+  bool *is_available;
+
+} chttps_connections;
+
+/**
+ * Struct containing the server instance
+ */
+typedef struct
+{
+  int sfd;                     /* Server file descriptor */
+  chttps_config conf;          /* Server configuration   */
+  chttps_connections connections; /* List of active/inactive connections */
+  chttps_router router;
+
+} chttps_server;
   
 #ifdef __cplusplus
 }

@@ -29,7 +29,7 @@
 extern "C" {
 #endif
 
-/*
+/**
  * Called after SIGTERM
  */
 void chttps_signal_close(int);
