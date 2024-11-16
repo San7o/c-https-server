@@ -1,5 +1,6 @@
 #include <chttps/chttps.h>
 #include <string.h>
+#include <stdio.h>
 
 #define chttps_handle_error(err) \
   do { fprintf(stderr, "Error in test parse: %s\n", chttps_err_str(-err)); \
@@ -8,7 +9,7 @@
   do { fprintf(stderr, "Error in test parse: %s\n", err); \
     exit(EXIT_FAILURE); } while (0)
 
-int main(void)
+void parse_request(void)
 {
   chttps_request *req;
   chttps_error err;
@@ -65,5 +66,32 @@ int main(void)
   err = chttps_parse_request(line, &req);
   if (-err != CHTTPS_PARSE_WRONG_VERSION_ERROR)
     handle_error("Test: wrong version failed");
+  return;
+}
+
+void response_string(void)
+{
+  chttps_response res = {};
+  res.header.status_code = 200;
+  strcpy(res.header.version, "1.0");
+  res.body_len = 5;
+  strcpy(res.body, "hello");
+
+  chttps_error err;
+  char *out;
+  err = chttps_create_response(&res, &out);
+  if (err != CHTTPS_NO_ERROR)
+    chttps_handle_error(err);
+  char *expected = "HTTP/1.0 200 OK\t\nhello";
+  if (strncmp(out, expected, strlen(expected)) != 0)
+    handle_error("Test 1: Wrong response");
+  free(out);
+  return;
+}
+
+int main(void)
+{
+  parse_request();
+  response_string();
   return 0;
 }

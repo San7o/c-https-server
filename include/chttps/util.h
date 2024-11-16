@@ -37,6 +37,8 @@ char* chttps_log_level_str(chttps_log_level level);
 
 chttps_config chttps_config_default();
 
+char* chttps_code_str(int https_code);
+
 #ifdef __cplusplus
 }
 #endif

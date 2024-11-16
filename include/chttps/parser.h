@@ -34,6 +34,9 @@ extern "C" {
 chttps_error chttps_parse_request(char* request,
 				  chttps_request **out);
   
+chttps_error chttps_create_response(chttps_response *res,
+				   char** out);
+
 #ifdef __cplusplus
 }
 #endif

@@ -52,6 +52,7 @@ typedef enum
   CHTTPS_PARSE_WRONG_METHOD_ERROR,
   CHTTPS_PARSE_WRONG_URI_ERROR,
   CHTTPS_PARSE_WRONG_VERSION_ERROR,
+  CHTTPS_RESPONCE_IS_NULL_ERROR,
   CHTTPS_REMOVE_CONNECTION_ERROR,
   CHTTPS_IP_CONVERSION_ERROR,
   CHTTPS_SOCKET_ERROR,
@@ -151,15 +152,22 @@ typedef struct
   char uri[255];
   char version[4];
 } chttps_request_header;
-  
+
+/*
+ * Example request line:
+ * GET http://www.w3.org/pub/WWW/TheProject.html HTTP/1.0
+ */
 typedef struct
 {
   chttps_request_header header;
   size_t body_len;
   char body[255];
 } chttps_request;
-  
 
+/*
+ * Note: use chttps_code_str() to convert the status code
+ * to string.
+ */
 typedef struct
 {
   /* RFC 1945
@@ -181,6 +189,12 @@ typedef struct
    */
   int status_code;
   char version[4];
+
+} chttps_response_header;
+  
+typedef struct
+{
+  chttps_response_header header;
   size_t body_len;
   char body[255];
   

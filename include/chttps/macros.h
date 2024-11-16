@@ -29,10 +29,10 @@
 extern "C" {
 #endif
 
-#include <stdio.h>     /* printf */
-#include <stdlib.h>     /* malloc & free */
-
 #ifdef DEBUG  
+
+#include <stdio.h>      /* printf */
+#include <stdlib.h>     /* malloc & free */
 
 #define malloc(...) \
   malloc(__VA_ARGS__); \

@@ -58,6 +58,8 @@ char* chttps_err_str(chttps_error err)
       return "CHTTPS_PARSE_WRONG_URI_ERROR";
     case CHTTPS_PARSE_WRONG_VERSION_ERROR:
       return "CHTTPS_PARSE_WRONG_VERSION_ERROR";
+    case CHTTPS_RESPONCE_IS_NULL_ERROR:
+      return "CHTTPS_RESPONCE_IS_NULL_ERROR";
     case CHTTPS_REMOVE_CONNECTION_ERROR:
       return "CHTTPS_REMOVE_CONNECTION_ERROR";
     case CHTTPS_SOCKET_ERROR:
@@ -91,6 +93,45 @@ char* chttps_log_level_str(chttps_log_level level)
       return "OUTPUT";
     default:
       return "UNKNOWN_LOG_LEVEL";
+    }
+}
+
+char* chttps_code_str(int https_code)
+{
+  switch(https_code)
+    {
+    case 200:
+      return "OK";
+    case 201:
+      return "Created";
+    case 202:
+      return "Accepted";
+    case 204:
+      return "No Content";
+    case 301:
+      return "Moved Permanently";
+    case 302:
+      return "Moved Temporarily";
+    case 304:
+      return "Not Modified";
+    case 400:
+      return "Bar Request";
+    case 401:
+      return "Unauthorized";
+    case 403:
+      return "Forbidden";
+    case 404:
+      return "Not Found";
+    case 500:
+      return "Internal Server Error";
+    case 501:
+      return "Not Implemented";
+    case 502:
+      return "Bad Gateway";
+    case 503:
+      return "Service Unavailable";
+    default:
+      return "Unknown Error Code";
     }
 }
 

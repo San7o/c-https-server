@@ -24,8 +24,10 @@
 
 #include <string.h>          /* strtok, strcpy */
 #include <stdlib.h>          /* malloc         */
+#include <stdio.h>           /* sfprintf       */
 
 #include <chttps/parser.h>
+#include <chttps/util.h>
 
 chttps_error chttps_parse_request(char* request,
 				  chttps_request **out)
@@ -70,6 +72,31 @@ chttps_error chttps_parse_request(char* request,
   if (strlen(version) != 8 || strncmp(version, "HTTP/", 5))
     return -CHTTPS_PARSE_WRONG_VERSION_ERROR;
   strncpy((*out)->header.version, version+5, 4);
+
+  return CHTTPS_NO_ERROR;
+}
+
+chttps_error chttps_create_response(chttps_response *res, char** out)
+{
+  if (res == NULL || out == NULL)
+    return -CHTTPS_RESPONCE_IS_NULL_ERROR;
+
+  *out = malloc(sizeof(chttps_response_header)+res->body_len);
+
+  /* Header */
+  char code[4];
+  sprintf(code, "%d", res->header.status_code);
+
+  strcpy(*out, "HTTP/");
+  strcat(*out, res->header.version);
+  strcat(*out, " ");
+  strcat(*out, code);
+  strcat(*out, " ");
+  strcat(*out, chttps_code_str(res->header.status_code));
+  strcat(*out, "\t\n");
+
+  /* Body */
+  strncat(*out, res->body, res->body_len);
 
   return CHTTPS_NO_ERROR;
 }
