@@ -22,27 +22,17 @@
  * SOFTWARE.
  */
 
-#ifndef _CHTTPS_MACROS_H
-#define _CHTTPS_MACROS_H
+#ifndef _CHTTPS_PARSER_H
+#define _CHTTPS_PARSER_H
+
+#include <chttps/types.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#include <stdio.h>     /* printf */
-#include <stdlib.h>     /* malloc & free */
-
-#ifdef DEBUG  
-
-#define malloc(...) \
-  malloc(__VA_ARGS__); \
-  printf("Malloc at file: %s, line: %d\n", __FILE__, __LINE__)
-
-#define free(...) \
-  free(__VA_ARGS__); \
-  printf("Free at file: %s, line: %d\n", __FILE__, __LINE__)
-
-#endif
+chttps_error chttps_parse_request(char* request,
+				  chttps_request **out);
   
 #ifdef __cplusplus
 }

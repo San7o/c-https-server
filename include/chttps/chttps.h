@@ -13,5 +13,6 @@
 #include <chttps/logger.h>
 #include <chttps/signals.h>
 #include <chttps/connections.h>
+#include <chttps/parser.h>
 
 #endif

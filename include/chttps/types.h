@@ -49,6 +49,9 @@ typedef enum
   CHTTPS_PTHREAD_CREATE_ERROR,
   CHTTPS_PTHREAD_JOIN_ERROR,
   CHTTPS_PTHREAD_CANCEL_ERROR,
+  CHTTPS_PARSE_WRONG_METHOD_ERROR,
+  CHTTPS_PARSE_WRONG_URI_ERROR,
+  CHTTPS_PARSE_WRONG_VERSION_ERROR,
   CHTTPS_REMOVE_CONNECTION_ERROR,
   CHTTPS_IP_CONVERSION_ERROR,
   CHTTPS_SOCKET_ERROR,
@@ -91,7 +94,7 @@ typedef struct sockaddr chttps_addr;
  */
 typedef struct
 {
-  const char *listen_ip;       /* The IP to listen from */
+  const char* listen_ip;       /* The IP to listen from */
   chttps_port_t port;          /* Port to listen from   */
   chttps_log_level log_level;  /* Output log level */
   int waiting_queue_size;      /* Waiting queue for new connections */
@@ -129,6 +132,59 @@ typedef struct
   chttps_config conf;          /* Server configuration   */
   chttps_connections connections; /* List of active/inactive connections */
 } chttps_server;
+
+/* =========================================
+ * HTTPS TYPES
+ * ========================================= */
+
+typedef enum
+{
+  CHTTPS_GET,
+  CHTTPS_HEAD,
+  CHTTPS_POST,
+  _CHTTPS_REQUEST_TYPE_MAX,
+} chttps_request_method;
+  
+typedef struct
+{
+  chttps_request_method method;
+  char uri[255];
+  char version[4];
+} chttps_request_header;
+  
+typedef struct
+{
+  chttps_request_header header;
+  size_t body_len;
+  char body[255];
+} chttps_request;
+  
+
+typedef struct
+{
+  /* RFC 1945
+   * Status-Code    = "200"   ; OK
+   *                | "201"   ; Created
+   *                | "202"   ; Accepted
+   *                | "204"   ; No Content
+   *                | "301"   ; Moved Permanently
+   *                | "302"   ; Moved Temporarily
+   *                | "304"   ; Not Modified
+   *                | "400"   ; Bad Request
+   *                | "401"   ; Unauthorized
+   *                | "403"   ; Forbidden
+   *                | "404"   ; Not Found
+   *                | "500"   ; Internal Server Error
+   *                | "501"   ; Not Implemented
+   *                | "502"   ; Bad Gateway
+   *                | "503"   ; Service Unavailable
+   */
+  int status_code;
+  char version[4];
+  size_t body_len;
+  char body[255];
+  
+} chttps_response;
 
 #ifdef __cplusplus
 }
