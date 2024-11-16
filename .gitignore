@@ -2,3 +2,4 @@
 *.out
 *.o
 build
+generated_docs

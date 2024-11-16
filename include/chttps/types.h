@@ -30,6 +30,7 @@
 #include <stdbool.h>     /* for bools   */
 
 #define CHTTPS_MAX_STRING_SIZE 255
+#define CHTTPS_MAX_ROUTES 255
 
 #ifdef __cplusplus
 extern "C" {
@@ -56,6 +57,8 @@ typedef enum
   CHTTPS_PARSE_WRONG_VERSION_ERROR,
   CHTTPS_RESPONCE_IS_NULL_ERROR,
   CHTTPS_ROUTE_IS_NULL_ERROR,
+  CHTTPS_ROUTER_IS_NULL_ERROR,
+  CHTTPS_ROUTER_FULL_ERROR,
   CHTTPS_REMOVE_CONNECTION_ERROR,
   CHTTPS_IP_CONVERSION_ERROR,
   CHTTPS_SOCKET_ERROR,
@@ -82,6 +85,11 @@ typedef enum
 
 } chttps_log_level;
 
+  
+/* ====================================
+ * CONNECTION TYPES
+ * ==================================== */
+  
 typedef uint16_t chttps_port_t; 
 
 /* Alias of sockaddr
@@ -143,6 +151,7 @@ typedef struct
 
 } chttps_server;
 
+  
 /* =========================================
  * HTTPS TYPES
  * ========================================= */
@@ -212,6 +221,11 @@ typedef struct
 
 } chttps_response;
 
+  
+/* ========================================
+ * ROUTES TYPES
+ * ======================================== */
+  
 typedef struct
 {
   char path[CHTTPS_MAX_STRING_SIZE];
@@ -222,6 +236,13 @@ typedef struct
   chttps_error (*post)(chttps_request *req, char *out);
 
 } chttps_route;
+
+typedef struct
+{
+  size_t registered_routes;
+  chttps_route *routes[CHTTPS_MAX_ROUTES];
+
+} chttps_router;
   
 #ifdef __cplusplus
 }

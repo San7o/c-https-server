@@ -15,8 +15,8 @@ CCFLAGS        = ${COMPILE_FLAGS} ${INCLUDE_FLAGS}
 
 default: ${BUILD_DIR}/chttpsd
 
-$(BUILD_DIR)/libchttps.so: builddir $(BUILD_DIR)/server.o ${BUILD_DIR}/logger.o $(BUILD_DIR)/util.o ${BUILD_DIR}/signals.o ${BUILD_DIR}/connections.o ${BUILD_DIR}/parser.o ${BUILD_DIR}/route.o
-	${CC} $(BUILD_DIR)/server.o $(BUILD_DIR)/util.o ${BUILD_DIR}/logger.o ${BUILD_DIR}/signals.o ${BUILD_DIR}/connections.o ${BUILD_DIR}/parser.o ${BUILD_DIR}/route.o -o ${BUILD_DIR}/libchttps.so $(CCFLAGS) -shared -fPIC
+$(BUILD_DIR)/libchttps.so: builddir $(BUILD_DIR)/server.o ${BUILD_DIR}/logger.o $(BUILD_DIR)/util.o ${BUILD_DIR}/signals.o ${BUILD_DIR}/connections.o ${BUILD_DIR}/parser.o ${BUILD_DIR}/route.o ${BUILD_DIR}/router.o
+	${CC} $(BUILD_DIR)/server.o $(BUILD_DIR)/util.o ${BUILD_DIR}/logger.o ${BUILD_DIR}/signals.o ${BUILD_DIR}/connections.o ${BUILD_DIR}/parser.o ${BUILD_DIR}/route.o ${BUILD_DIR}/router.o -o ${BUILD_DIR}/libchttps.so $(CCFLAGS) -shared -fPIC
 
 builddir:
 	mkdir ${BUILD_DIR} 2>/dev/null || \:
@@ -35,6 +35,8 @@ $(BUILD_DIR)/parser.o: ${LIB_DIR}/parser.c
 	${CC} -c ${LIB_DIR}/parser.c -o ${BUILD_DIR}/parser.o ${CCFLAGS}
 $(BUILD_DIR)/route.o: ${LIB_DIR}/route.c
 	${CC} -c ${LIB_DIR}/route.c -o ${BUILD_DIR}/route.o ${CCFLAGS}
+$(BUILD_DIR)/router.o: ${LIB_DIR}/router.c
+	${CC} -c ${LIB_DIR}/router.c -o ${BUILD_DIR}/router.o ${CCFLAGS}
 
 ## DAEMON
 
@@ -46,7 +48,7 @@ $(BUILD_DIR)/main.o: $(SOURCE_DIR)/main.c
 
 ## TESTS
 
-check: socket_connection_test connection_add_remove_test parse_test
+check: socket_connection_test connection_add_remove_test parse_test router_test
 socket_connection_test: ${BUILD_DIR}/libchttps.so ${TESTS_DIR}/socket_connection.c
 	${CC} ${BUILD_DIR}/libchttps.so ${TESTS_DIR}/socket_connection.c -o ${BUILD_DIR}/socket_connection ${CCFLAGS} -pthread
 	${BUILD_DIR}/socket_connection || echo "Test socket_connection Failed!!"
@@ -56,6 +58,9 @@ connection_add_remove_test: ${BUILD_DIR}/libchttps.so  ${TESTS_DIR}/connection_a
 parse_test: ${BUILD_DIR}/libchttps.so  ${TESTS_DIR}/parse.c
 	${CC} ${BUILD_DIR}/libchttps.so ${TESTS_DIR}/parse.c -o ${BUILD_DIR}/parse ${CCFLAGS} -pthread
 	${BUILD_DIR}/parse || echo "Test parse Failed!!"
+router_test: ${BUILD_DIR}/libchttps.so  ${TESTS_DIR}/router_test.c
+	${CC} ${BUILD_DIR}/libchttps.so ${TESTS_DIR}/router_test.c -o ${BUILD_DIR}/router_test ${CCFLAGS} -pthread
+	${BUILD_DIR}/router_test || echo "Test router_test Failed!!"
 
 ## UTILITIES
 
