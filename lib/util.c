@@ -60,6 +60,8 @@ char* chttps_err_str(chttps_error err)
       return "CHTTPS_PARSE_WRONG_VERSION_ERROR";
     case CHTTPS_RESPONCE_IS_NULL_ERROR:
       return "CHTTPS_RESPONCE_IS_NULL_ERROR";
+    case CHTTPS_ROUTE_IS_NULL_ERROR:
+      return "CHTTPS_ROUTE_IS_NULL_ERROR";
     case CHTTPS_REMOVE_CONNECTION_ERROR:
       return "CHTTPS_REMOVE_CONNECTION_ERROR";
     case CHTTPS_SOCKET_ERROR:

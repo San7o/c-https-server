@@ -15,8 +15,8 @@ CCFLAGS        = ${COMPILE_FLAGS} ${INCLUDE_FLAGS}
 
 default: ${BUILD_DIR}/chttpsd
 
-$(BUILD_DIR)/libchttps.so: builddir $(BUILD_DIR)/server.o ${BUILD_DIR}/logger.o $(BUILD_DIR)/util.o ${BUILD_DIR}/signals.o ${BUILD_DIR}/connections.o ${BUILD_DIR}/parser.o
-	${CC} $(BUILD_DIR)/server.o $(BUILD_DIR)/util.o ${BUILD_DIR}/logger.o ${BUILD_DIR}/signals.o ${BUILD_DIR}/connections.o ${BUILD_DIR}/parser.o -o ${BUILD_DIR}/libchttps.so $(CCFLAGS) -shared -fPIC
+$(BUILD_DIR)/libchttps.so: builddir $(BUILD_DIR)/server.o ${BUILD_DIR}/logger.o $(BUILD_DIR)/util.o ${BUILD_DIR}/signals.o ${BUILD_DIR}/connections.o ${BUILD_DIR}/parser.o ${BUILD_DIR}/route.o
+	${CC} $(BUILD_DIR)/server.o $(BUILD_DIR)/util.o ${BUILD_DIR}/logger.o ${BUILD_DIR}/signals.o ${BUILD_DIR}/connections.o ${BUILD_DIR}/parser.o ${BUILD_DIR}/route.o -o ${BUILD_DIR}/libchttps.so $(CCFLAGS) -shared -fPIC
 
 builddir:
 	mkdir ${BUILD_DIR} 2>/dev/null || \:
@@ -33,6 +33,8 @@ $(BUILD_DIR)/connections.o: ${LIB_DIR}/connections.c
 	${CC} -c ${LIB_DIR}/connections.c -o ${BUILD_DIR}/connections.o ${CCFLAGS}
 $(BUILD_DIR)/parser.o: ${LIB_DIR}/parser.c
 	${CC} -c ${LIB_DIR}/parser.c -o ${BUILD_DIR}/parser.o ${CCFLAGS}
+$(BUILD_DIR)/route.o: ${LIB_DIR}/route.c
+	${CC} -c ${LIB_DIR}/route.c -o ${BUILD_DIR}/route.o ${CCFLAGS}
 
 ## DAEMON
 

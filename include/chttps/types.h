@@ -29,6 +29,8 @@
 #include <sys/socket.h>  /* sockaddr_in */ 
 #include <stdbool.h>     /* for bools   */
 
+#define CHTTPS_MAX_STRING_SIZE 255
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -53,6 +55,7 @@ typedef enum
   CHTTPS_PARSE_WRONG_URI_ERROR,
   CHTTPS_PARSE_WRONG_VERSION_ERROR,
   CHTTPS_RESPONCE_IS_NULL_ERROR,
+  CHTTPS_ROUTE_IS_NULL_ERROR,
   CHTTPS_REMOVE_CONNECTION_ERROR,
   CHTTPS_IP_CONVERSION_ERROR,
   CHTTPS_SOCKET_ERROR,
@@ -61,6 +64,7 @@ typedef enum
   CHTTPS_ACCEPT_CONNECTION_ERROR,
   CHTTPS_CLOSE_SERVER_SOCKET_ERROR,
   _CHTTPS_ERROR_MAX
+
 } chttps_error;
 
 /*
@@ -75,6 +79,7 @@ typedef enum
   CHTTPS_OUT,
   CHTTPS_DISABLED,   /* This is guaranteed to not print anything */
   _CHTTPS_LOG_LEVEL_MAX  /* as well as this                          */
+
 } chttps_log_level;
 
 typedef uint16_t chttps_port_t; 
@@ -100,6 +105,7 @@ typedef struct
   chttps_log_level log_level;  /* Output log level */
   int waiting_queue_size;      /* Waiting queue for new connections */
   size_t max_connections;      /* Maximum number of open connections */
+
 } chttps_config;
 
 /*
@@ -109,6 +115,7 @@ typedef struct
 {
   int cfd;                     /* Client file descriptor */
   chttps_addr addr;            /* Client address struct  */
+
 } chttps_client;
 
 /*
@@ -122,6 +129,7 @@ typedef struct
   chttps_client **clients;
   pthread_t *threads;          /* Thread ID of each connection */
   bool *is_available;
+
 } chttps_connections;
   
 /*
@@ -132,6 +140,7 @@ typedef struct
   int sfd;                     /* Server file descriptor */
   chttps_config conf;          /* Server configuration   */
   chttps_connections connections; /* List of active/inactive connections */
+
 } chttps_server;
 
 /* =========================================
@@ -144,13 +153,15 @@ typedef enum
   CHTTPS_HEAD,
   CHTTPS_POST,
   _CHTTPS_REQUEST_TYPE_MAX,
+
 } chttps_request_method;
   
 typedef struct
 {
   chttps_request_method method;
-  char uri[255];
+  char uri[CHTTPS_MAX_STRING_SIZE];
   char version[4];
+  
 } chttps_request_header;
 
 /*
@@ -161,7 +172,8 @@ typedef struct
 {
   chttps_request_header header;
   size_t body_len;
-  char body[255];
+  char body[CHTTPS_MAX_STRING_SIZE];
+
 } chttps_request;
 
 /*
@@ -196,10 +208,21 @@ typedef struct
 {
   chttps_response_header header;
   size_t body_len;
-  char body[255];
-  
+  char body[CHTTPS_MAX_STRING_SIZE];
+
 } chttps_response;
 
+typedef struct
+{
+  char path[CHTTPS_MAX_STRING_SIZE];
+
+  /* Functions called by the router based on the request */
+  chttps_error (*get)(chttps_request *req, char *out);
+  chttps_error (*head)(chttps_request *req, char *out);
+  chttps_error (*post)(chttps_request *req, char *out);
+
+} chttps_route;
+  
 #ifdef __cplusplus
 }
 #endif
