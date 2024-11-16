@@ -152,7 +152,7 @@ typedef struct
 {
   chttps_response_header header;
   size_t body_len;
-  char body[CHTTPS_MAX_STRING_SIZE];
+  char *body;
 
 } chttps_response;
 
@@ -166,9 +166,9 @@ typedef struct
   char path[CHTTPS_MAX_STRING_SIZE];
 
   /* Functions called by the router based on the request */
-  chttps_error (*get)(chttps_request *req, char *out);
-  chttps_error (*head)(chttps_request *req, char *out);
-  chttps_error (*post)(chttps_request *req, char *out);
+  chttps_error (*get)(chttps_request *req, char **out);
+  chttps_error (*head)(chttps_request *req, char **out);
+  chttps_error (*post)(chttps_request *req, char **out);
 
 } chttps_route;
 

@@ -5,7 +5,7 @@ SOURCE_DIR     = ${PROJECT_DIR}/src
 TESTS_DIR      = ${PROJECT_DIR}/test
 
 CC             = gcc
-COMPILE_FLAGS  = -Wall -Wextra -Werror -Wno-unused-function
+COMPILE_FLAGS  = -Wall -Wextra -Werror -Wno-unused-function -Wno-unused-parameter -Wno-unused-variable -Wno-int-to-pointer-cast -Wno-format
 INCLUDE_FLAGS  = -I ${PROJECT_DIR}/include
 CCFLAGS        = ${COMPILE_FLAGS} ${INCLUDE_FLAGS}
 
@@ -48,7 +48,7 @@ $(BUILD_DIR)/main.o: $(SOURCE_DIR)/main.c
 
 ## TESTS
 
-check: socket_connection_test connection_add_remove_test parse_test router_test
+check: socket_connection_test connection_add_remove_test parse_test router_test server_router_test test_server
 socket_connection_test: ${BUILD_DIR}/libchttps.so ${TESTS_DIR}/socket_connection.c
 	${CC} ${BUILD_DIR}/libchttps.so ${TESTS_DIR}/socket_connection.c -o ${BUILD_DIR}/socket_connection ${CCFLAGS} -pthread
 	${BUILD_DIR}/socket_connection || echo "Test socket_connection Failed!!"
@@ -61,6 +61,11 @@ parse_test: ${BUILD_DIR}/libchttps.so  ${TESTS_DIR}/parse.c
 router_test: ${BUILD_DIR}/libchttps.so  ${TESTS_DIR}/router_test.c
 	${CC} ${BUILD_DIR}/libchttps.so ${TESTS_DIR}/router_test.c -o ${BUILD_DIR}/router_test ${CCFLAGS} -pthread
 	${BUILD_DIR}/router_test || echo "Test router_test Failed!!"
+server_router_test: ${BUILD_DIR}/libchttps.so  ${TESTS_DIR}/server_router_test.c
+	${CC} ${BUILD_DIR}/libchttps.so ${TESTS_DIR}/server_router_test.c -o ${BUILD_DIR}/server_router_test ${CCFLAGS} -pthread
+	${BUILD_DIR}/server_router_test || echo "Test server_router_test Failed!!"
+test_server: ${BUILD_DIR}/libchttps.so  ${TESTS_DIR}/test_server.c
+	${CC} ${BUILD_DIR}/libchttps.so ${TESTS_DIR}/test_server.c -o ${BUILD_DIR}/test_server ${CCFLAGS} -pthread
 
 ## UTILITIES
 

@@ -34,18 +34,27 @@
 
 /* Default values */
 #define LISTEN_IP "0.0.0.0"
-#define PORT 6969
+#define PORT 6971
 
 #define chttps_handle_error(err) \
-  do { fprintf(stderr, "Error in test socket_connection: %s\n", chttps_err_str(-err)); \
+  do { fprintf(stderr, "Error in test server_router_test: %s\n", chttps_err_str(-err)); \
     exit(EXIT_FAILURE); } while (0)
 #define handle_error(err) \
-  do { fprintf(stderr, "Error in test socket_connection: %s\n", err); \
+  do { fprintf(stderr, "Error in test setver_router_test: %s\n", err); \
     exit(EXIT_FAILURE); } while (0)
+
+chttps_error greet_get_callback(chttps_request *req, char **out)
+{
+  const char* message = "";
+  *out = malloc(sizeof(message));
+  strcpy(*out, message);
+  return CHTTPS_NO_ERROR;
+}
 
 /* Create a test server */
 static void *server(void*)
 {
+  /* Initialize the server */
   chttps_error err;
   chttps_config config = chttps_config_default();
   config.log_level          = CHTTPS_DISABLED;
@@ -56,36 +65,95 @@ static void *server(void*)
   if (err != CHTTPS_NO_ERROR)
     chttps_handle_error(err);
 
-  chttps_client *client; /* Client file descriptor */
+  /* Create a bunch of routes with their callbacks*/
+  chttps_route *route1;
+  err = chttps_route_create("/api/greet", &route1);
+  if (err != CHTTPS_NO_ERROR)
+    chttps_handle_error(err);
+  err = chttps_route_set_get(route1, greet_get_callback);
+  if (err != CHTTPS_NO_ERROR)
+    chttps_handle_error(err);
+
+  /* Register the routes */
+  err = chttps_router_add(&(my_server.router), route1);
+  if (err != CHTTPS_NO_ERROR)
+    chttps_handle_error(err);
+
+  /* Listen client connection */
+  chttps_client *client;
   err = chttps_server_listen(&my_server, &client);
   if (err != CHTTPS_NO_ERROR)
     chttps_handle_error(err);
 
-  /* Wait for a message */
-  char received_message[20];
+  /* Receive message */
+  printf("Server: Ready to receive message...\n");
+  char received_message[255];
   strcpy(received_message, "");
-  ssize_t received = recv(client->cfd, received_message, 20, 0);
-  if (received != strlen("Hello folks"))
+  const char *expected_message = "GET /api/greet HTTP/1.0\t\n";
+  recv(client->cfd, received_message, 255, 0);
+  if (strcmp(received_message, expected_message) != 0)
     {
-      fprintf(stderr, "Server: Received %ld bytes\n", received);
-      handle_error("Server Received wrong message size");
+      handle_error("Server: Message received is not the expected one");
     }
-  if (strncmp("Hello folks", received_message, 11) != 0)
+  fprintf(stdout, "Server: Done Reading\n");
+  fprintf(stdout, "Server: Message Received: %s\n", received_message);
+
+  /* Parse the request */
+  fprintf(stdout, "Server: parsing request...\n");
+  chttps_request *req;
+  err = chttps_parse_request(received_message, &req);
+  if (err != CHTTPS_NO_ERROR)
+    chttps_handle_error(err);
+
+  /* Match the route */
+  chttps_route *match;
+  err = chttps_router_match(&(my_server.router), req->header.uri, &match);
+  if (err != CHTTPS_NO_ERROR)
+    chttps_handle_error(err);
+
+  /* Execute the callback */
+  fprintf(stdout, "Server: executing callback...\n");
+  char *out;
+  if (req->header.method == CHTTPS_GET)
     {
-      handle_error("Server Wrong message received");
+      err = chttps_route_get(match, req, &out);
+      if (err != CHTTPS_NO_ERROR)
+	chttps_handle_error(err);
     }
+  else handle_error("Server: Wrong method in client request");
+
+  /* Create a response */
+  fprintf(stdout, "Server: setting up response...\n");
+  chttps_response_header res_h = {
+    .status_code = 200,
+  };
+  strcpy(res_h.version, "1.0");
+  chttps_response res = {
+    .header = res_h,
+    .body_len = strlen(out),
+    .body = out,
+  };
+  fprintf(stdout, "Server: creating response...\n");
+  char* res_str;
+  err = chttps_create_response(&res, &res_str);
+  if (err != CHTTPS_NO_ERROR)
+    chttps_handle_error(err);
   
-  /* Send a resposnse */
-  const char *message = "OK\0";
-  ssize_t sent = send(client->cfd, message, strlen(message), 0);
-  if (sent != (ssize_t) strlen(message))
+  /* Send the resposnse */
+  fprintf(stdout, "Server: sending response \"%s\"...\n", res_str);
+  ssize_t sent = send(client->cfd, res_str, strlen(res_str), 0);
+  if (sent != (ssize_t) strlen(res_str))
     handle_error("Server send");
+  fprintf(stdout, "Server: sent %ld bytes\n", sent);
   
   /* Cleanup */
   chttps_server_close(&my_server);
   if (err != CHTTPS_NO_ERROR)
     chttps_handle_error(err);
   free(client);
+  free(res_str);
+  free(req);
+  free(out);
   return NULL;
 }
 
@@ -109,19 +177,20 @@ void send_message(void)
     handle_error("Client connect");
 
   /* Send a message */
-  char message[] = "Hello folks\0";
+  printf("Client: Sending the message...\n");
+  char message[30];
+  strcpy(message, "GET /api/greet HTTP/1.0\t\n\0");
   ssize_t sent = send(sfd, message, strlen(message), 0);
-  if (sent != (ssize_t) strlen(message))
-    handle_error("Client send");
+  printf("Client: Sent %ld bytes\n", sent);
 
   /* Get response */
-  char received_message[3];
-  ssize_t received = recv(sfd, received_message, 3, 0);
-  if (received != 2)
-    handle_error("Client Received wrong message size");
-  if (strncmp(received_message, "OK", 2))
-    handle_error("Client Wrong message received");
-
+  char received_message[255];
+  recv(sfd, received_message, 255, 0);
+  fprintf(stdout, "Client: Message Received: %s\n", received_message);
+  if (strcmp(received_message, "HTTP/1.0 200 OK\t\n"))
+    {
+      handle_error("Client Wrong message received");
+    }
   err = close(sfd);
   if (err)
     handle_error("Client close");
@@ -142,7 +211,7 @@ int main(void)
   if (err)
     handle_error("pthread_create");
   
-  sleep(2);
+  sleep(3);
   send_message();
 
   /* Close thread */

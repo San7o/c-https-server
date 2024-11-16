@@ -41,7 +41,7 @@ chttps_error chttps_route_create(char* path, chttps_route **route)
 /* Setters */
 
 chttps_error chttps_route_set_get(chttps_route *route,
-				    chttps_error (*get)(chttps_request *req, char *out))
+				    chttps_error (*get)(chttps_request *req, char **out))
 {
     if (get == NULL || route == NULL)
 	return -CHTTPS_ROUTE_IS_NULL_ERROR;
@@ -51,7 +51,7 @@ chttps_error chttps_route_set_get(chttps_route *route,
 }
 
 chttps_error chttps_route_set_head(chttps_route *route,
-				   chttps_error (*head)(chttps_request *req, char *out))
+				   chttps_error (*head)(chttps_request *req, char **out))
 {
     if (head == NULL || route == NULL)
 	return -CHTTPS_ROUTE_IS_NULL_ERROR;
@@ -61,7 +61,7 @@ chttps_error chttps_route_set_head(chttps_route *route,
 }
 
 chttps_error chttps_route_set_post(chttps_route *route,
-				   chttps_error (*post)(chttps_request *req, char *out))
+				   chttps_error (*post)(chttps_request *req, char **out))
 {
     if (post == NULL || route == NULL)
 	return -CHTTPS_ROUTE_IS_NULL_ERROR;
@@ -74,7 +74,7 @@ chttps_error chttps_route_set_post(chttps_route *route,
 
 chttps_error chttps_route_get(chttps_route *route,
 			      chttps_request *req,
-			      char* out)
+			      char** out)
 {
     if (route == NULL || req == NULL)
 	return -CHTTPS_ROUTE_IS_NULL_ERROR;
@@ -84,7 +84,7 @@ chttps_error chttps_route_get(chttps_route *route,
 
 chttps_error chttps_route_head(chttps_route *route,
 			       chttps_request *req,
-			       char* out)
+			       char** out)
 {
   if (route == NULL || req == NULL)
     return -CHTTPS_ROUTE_IS_NULL_ERROR;
@@ -94,7 +94,7 @@ chttps_error chttps_route_head(chttps_route *route,
 
 chttps_error chttps_route_post(chttps_route *route,
 			       chttps_request *req,
-			       char* out)
+			       char** out)
 {
   if (route == NULL || req == NULL)
     return -CHTTPS_ROUTE_IS_NULL_ERROR;

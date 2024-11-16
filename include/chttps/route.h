@@ -38,22 +38,22 @@ chttps_error chttps_route_create(char* path, chttps_route **route);
 
 /* Setters */
 chttps_error chttps_route_set_get(chttps_route *route,
-				  chttps_error (*get)(chttps_request *req, char *out));
+				  chttps_error (*get)(chttps_request *req, char **out));
 chttps_error chttps_route_set_head(chttps_route *route,
-				   chttps_error (*get)(chttps_request *req, char *out));
+				   chttps_error (*get)(chttps_request *req, char **out));
 chttps_error chttps_route_set_post(chttps_route *route,
-				   chttps_error (*get)(chttps_request *req, char *out));
+				   chttps_error (*get)(chttps_request *req, char **out));
 
 /* Getters */
 chttps_error chttps_route_get(chttps_route *route,
 			      chttps_request *req,
-			      char* out);
+			      char** out);
 chttps_error chttps_route_head(chttps_route *route,
 			       chttps_request *req,
-			       char* out);
+			       char** out);
 chttps_error chttps_route_post(chttps_route *route,
 			       chttps_request *req,
-			       char* out);
+			       char** out);
   
 #ifdef __cplusplus
 }

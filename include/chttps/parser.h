@@ -33,6 +33,8 @@ extern "C" {
 
 /**
  * Parse a request string into an allocated chttps_request.
+ * It is allocated because the body of the request may
+ * vary in size.
  */
 chttps_error chttps_parse_request(char* request,
 				  chttps_request **out);
@@ -41,7 +43,7 @@ chttps_error chttps_parse_request(char* request,
  * Generate an allocated response string from chttps_response.
  */
 chttps_error chttps_create_response(chttps_response *res,
-				   char** out);
+				   char **out);
 
 #ifdef __cplusplus
 }

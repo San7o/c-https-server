@@ -51,3 +51,11 @@ To run self tests, run the following:
 #+BEGIN_SRC bash
 make check
 #+END_SRC bash
+
+You can play around with the test_server, via
+#+BEGIN_SRC bash
+make test_server
+#+END_SRC bash
+
+or look at the testcases to have a feel on how the API
+work.

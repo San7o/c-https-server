@@ -44,6 +44,20 @@ extern "C" {
 
 #endif
   
+#define chttps_thread_handle_error(error) \
+  do { \
+    char message[255]; \
+    sscanf(message, "Error in execution thread: %s\n", chttps_err_str(-error)); \
+    chttps_err(message, &(info.server->conf));			\
+    pthread_exit((void*)error); } while (0)
+  
+#define chttps_thread_handle_error_msg(...) \
+  do { \
+    char err[255]; \
+    sscanf(err, "Error in execution thread: %s\n", __VA_ARGS__);		\
+    chttps_err(err, &(info.server->conf));			\
+    pthread_exit(NULL); } while (0)
+
 #ifdef __cplusplus
 }
 #endif
