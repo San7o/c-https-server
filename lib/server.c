@@ -60,18 +60,22 @@ chttps_error chttps_server_init(chttps_server *server,
   server->connections = chttps_connections_init(server->conf.max_connections);
 
   struct in_addr addr;
+  chttps_port_t port;
   if (inet_aton(server->conf.listen_ip, &addr) == 0)  /* From char* IP to addr */
     return -CHTTPS_IP_CONVERSION_ERROR;
   struct sockaddr_in saddr = {
     /* sa_family_t    */ .sin_family = AF_INET,
-    /* in_port_t      */ .sin_port   = server->conf.port,
+    /* in_port_t      */ .sin_port   = htons(server->conf.port),
     /* struct in_addr */ .sin_addr   = addr
   };
 
   if (bind(server->sfd, (struct sockaddr*) &saddr, sizeof(saddr)) == -1)
     return -CHTTPS_BIND_ERROR;
 
-  chttps_info("Server started", &server->conf);
+  char info[255];
+  sprintf(info, "Server listening at %s:%d\n", server->conf.listen_ip,
+	 server->conf.port);
+  chttps_info(info, &server->conf);
   return CHTTPS_NO_ERROR;
 }
 
