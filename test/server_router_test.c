@@ -34,7 +34,7 @@
 
 /* Default values */
 #define LISTEN_IP "0.0.0.0"
-#define PORT 6971
+#define PORT 6972
 
 #define chttps_handle_error(err) \
   do { fprintf(stderr, "Error in test server_router_test: %s\n", chttps_err_str(-err)); \
@@ -166,7 +166,7 @@ void send_message(void)
     handle_error("inet_aton");
   struct sockaddr_in saddr = {
     /* sa_family_t    */ .sin_family = AF_INET,
-    /* in_port_t      */ .sin_port   = PORT,
+    /* in_port_t      */ .sin_port   = htons(PORT),
     /* struct in_addr */ .sin_addr   = addr
   };
   sfd = socket(AF_INET, SOCK_STREAM, 0); /* tcp socket */

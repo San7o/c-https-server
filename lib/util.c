@@ -68,6 +68,8 @@ char* chttps_err_str(chttps_error err)
       return "CHTTPS_ROUTER_NO_MATCH_ERROR";
     case CHTTPS_ROUTER_IS_NULL_ERROR:
       return "CHTTPS_ROUTER_IS_NULL_ERROR";
+    case CHTTPS_CALLBACK_IS_NULL_ERROR:
+      return "CHTTPS_CALLBACK_IS_NULL_ERROR";
     case CHTTPS_REMOVE_CONNECTION_ERROR:
       return "CHTTPS_REMOVE_CONNECTION_ERROR";
     case CHTTPS_SOCKET_ERROR:

@@ -79,7 +79,9 @@ chttps_error chttps_route_get(chttps_route *route,
     if (route == NULL || req == NULL)
 	return -CHTTPS_ROUTE_IS_NULL_ERROR;
 
-    return route->get(req, out);
+  if (route->get == NULL)
+    return -CHTTPS_CALLBACK_IS_NULL_ERROR;
+  return route->get(req, out);
 }
 
 chttps_error chttps_route_head(chttps_route *route,
@@ -89,6 +91,8 @@ chttps_error chttps_route_head(chttps_route *route,
   if (route == NULL || req == NULL)
     return -CHTTPS_ROUTE_IS_NULL_ERROR;
       
+  if (route->head == NULL)
+    return -CHTTPS_CALLBACK_IS_NULL_ERROR;
   return route->head(req, out);
 }
 
@@ -99,5 +103,7 @@ chttps_error chttps_route_post(chttps_route *route,
   if (route == NULL || req == NULL)
     return -CHTTPS_ROUTE_IS_NULL_ERROR;
       
+  if (route->post == NULL)
+    return -CHTTPS_CALLBACK_IS_NULL_ERROR;
   return route->post(req, out);
 }
