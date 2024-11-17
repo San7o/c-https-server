@@ -36,11 +36,24 @@
   do { fprintf(stderr, "Error: %s\n", err); \
     exit(EXIT_FAILURE); } while (0)
 
+
+void print_banner(void)
+{
+  char* banner =
+    "/*========================*\n"
+    " *      CHTTPS v0.0.1     *\n"
+    " *========================*/\n";
+  printf(banner);
+  return;
+}
+
 /*
  * Deamon main
  */
 int main(void)
 {
+  print_banner();
+  
   /* Setup signals */
   int sig_err;
   const struct sigaction siga = {
