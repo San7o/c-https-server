@@ -25,9 +25,6 @@
 #include <chttps/chttps.h>
 #include <stdio.h>               /* fprintf */
 
-#define chttps_handle_error(err) \
-  do { fprintf(stderr, "Error in test router_test: %s\n", chttps_err_str(-err)); \
-    exit(EXIT_FAILURE); } while (0)
 #define handle_error(err) \
   do { fprintf(stderr, "Error in test router_test: %s\n", err); \
     exit(EXIT_FAILURE); } while (0)

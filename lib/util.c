@@ -82,6 +82,20 @@ char* chttps_err_str(chttps_error err)
       return "CHTTPS_ACCEPT_CONNECTION_ERROR";
     case CHTTPS_CLOSE_SERVER_SOCKET_ERROR:
       return "CHTTPS_CLOSE_SERVER_SOCKET_ERROR";
+    case CHTTPS_MISSING_ARGUMENT_PORT_ERROR:
+      return "CHTTPS_MISSING_ARGUMENT_PORT_ERROR";
+    case CHTTPS_MISSING_ARGUMENT_IP_ERROR:
+      return "CHTTPS_MISSING_ARGUMENT_IP_ERROR";
+    case CHTTPS_MISSING_ARGUMENT_LOG_LEVEL_ERROR:
+      return "CHTTPS_MISSING_ARGUMENT_LOG_LEVEL_ERROR";
+    case CHTTPS_INVALID_ARGUMENT_PORT_ERROR:
+      return "CHTTPS_INVALID_ARGUMENT_PORT_ERROR";
+    case CHTTPS_INVALID_ARGUMENT_IP_ERROR:
+      return "CHTTPS_INVALID_ARGUMENT_IP_ERROR";
+    case CHTTPS_INVALID_ARGUMENT_LOG_LEVEL_ERROR:
+      return "CHTTPS_INVALID_ARGUMENT_LOG_LEVEL_ERROR";
+    case CHTTPS_UNKNOWN_ARGUMENT_ERROR:
+      return "CHTTPS_UNKNOWN_ARGUMENT_ERROR";
     default:
       return "ERROR_NOT_RECOGNISED";
     }
@@ -101,6 +115,8 @@ char* chttps_log_level_str(chttps_log_level level)
       return "ERROR";
     case CHTTPS_OUT:
       return "OUTPUT";
+    case CHTTPS_DISABLED:  /* We keep this case to iterate */
+      return "DISABLED";   /* over the possible levels str */ 
     default:
       return "UNKNOWN_LOG_LEVEL";
     }
@@ -153,6 +169,7 @@ chttps_config chttps_config_default()
     .log_level              = CHTTPS_INFO,
     .waiting_queue_size     = 64,
     .max_connections        = 1024,
+    .show_banner            = true,
   };
   return conf;
 }

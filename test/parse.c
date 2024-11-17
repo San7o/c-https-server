@@ -26,9 +26,6 @@
 #include <string.h>
 #include <stdio.h>
 
-#define chttps_handle_error(err) \
-  do { fprintf(stderr, "Error in test parse: %s\n", chttps_err_str(-err)); \
-    exit(EXIT_FAILURE); } while (0)
 #define handle_error(err) \
   do { fprintf(stderr, "Error in test parse: %s\n", err); \
     exit(EXIT_FAILURE); } while (0)

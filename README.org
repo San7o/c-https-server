@@ -1,8 +1,34 @@
 * chttps
 
+#+BEGIN_SRC
+/*======================================================*
+ *                    CHTTPS v0.0.1                     *
+ *======================================================*/
+Usage:
+  chttpsd [args...]
+
+Accepted args:
+    --port,-p
+        select port to listen to (default is 1234)
+    --ip,-i
+        select ip to listen to (default is 0.0.0.0)
+    --log-level,-ll
+        select the output log level. Options are:
+        - DEBUG
+        - INFO (DEFAULT)
+        - WARNING
+        - ERROR
+        - OUTPUT
+        - DISABLED
+    --no-banner,-np
+        do not show banner at startup (default true)
+    --help,-h
+        show this message
+#+END_SRC
+
 Chttps is an implementation of a TCP/IP + TLS
-server accepting the http/1.1 protocol as defined
-in RFC 2616, somewhat similar to the Apache web server.
+server accepting the http/1.0 protocol as defined
+in RFC 1945.
 A secondary goal for the project is to implement
 a server-side rendering engine.
 
@@ -59,3 +85,13 @@ make test_server
 
 or look at the testcases to have a feel on how the API
 work.
+
+* TODO
+
+The project is still in early developement, the
+following is a priority list with upcoming features:
+- autoconf: move to autoconf build system
+- request / response body: correctly read the body
+  of a request
+- config file: parse the configs from a file
+- server-side rendering: implement the SSR engine

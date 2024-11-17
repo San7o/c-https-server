@@ -40,11 +40,13 @@ $(BUILD_DIR)/router.o: ${LIB_DIR}/router.c
 
 ## DAEMON
 
-$(BUILD_DIR)/chttpsd: builddir ${BUILD_DIR}/libchttps.so $(BUILD_DIR)/main.o
-	$(CC) $(BUILD_DIR)/main.o -o $(BUILD_DIR)/chttpsd $(CCFLAGS) ${BUILD_DIR}/libchttps.so
+$(BUILD_DIR)/chttpsd: builddir ${BUILD_DIR}/libchttps.so $(BUILD_DIR)/main.o ${BUILD_DIR}/args.o
+	$(CC) ${BUILD_DIR}/args.o $(BUILD_DIR)/main.o -o $(BUILD_DIR)/chttpsd $(CCFLAGS) ${BUILD_DIR}/libchttps.so
 
 $(BUILD_DIR)/main.o: $(SOURCE_DIR)/main.c
 	${CC} -c $(SOURCE_DIR)/main.c -o $(BUILD_DIR)/main.o $(CCFLAGS) ${BUILD_DIR}/libchttps.so
+$(BUILD_DIR)/args.o: $(SOURCE_DIR)/args.c
+	${CC} -c $(SOURCE_DIR)/args.c -o $(BUILD_DIR)/args.o $(CCFLAGS)
 
 ## TESTS
 

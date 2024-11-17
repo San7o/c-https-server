@@ -36,6 +36,11 @@
 extern "C" {
 #endif
 
+  
+/* ====================================
+ * ERRORS
+ * ==================================== */
+
 /**
  * Tip: Convert the enum to a string with chttps_err_str()
  */
@@ -68,9 +73,21 @@ typedef enum
   CHTTPS_LISTEN_ERROR,
   CHTTPS_ACCEPT_CONNECTION_ERROR,
   CHTTPS_CLOSE_SERVER_SOCKET_ERROR,
+  CHTTPS_MISSING_ARGUMENT_PORT_ERROR,
+  CHTTPS_MISSING_ARGUMENT_IP_ERROR,
+  CHTTPS_MISSING_ARGUMENT_LOG_LEVEL_ERROR,
+  CHTTPS_INVALID_ARGUMENT_PORT_ERROR,
+  CHTTPS_INVALID_ARGUMENT_IP_ERROR,
+  CHTTPS_INVALID_ARGUMENT_LOG_LEVEL_ERROR,
+  CHTTPS_UNKNOWN_ARGUMENT_ERROR,
   _CHTTPS_ERROR_MAX
 
 } chttps_error;
+
+  
+/* ====================================
+ * LOG LEVELS
+ * ==================================== */
 
 /**
  * Tip: Convert the enum to a string with chttps_log_level_str()
@@ -82,12 +99,12 @@ typedef enum
   CHTTPS_WARN,
   CHTTPS_ERR,
   CHTTPS_OUT,
-  CHTTPS_DISABLED,   /* This is guaranteed to not print anything */
+  CHTTPS_DISABLED,       /* This is guaranteed to not print anything */
   _CHTTPS_LOG_LEVEL_MAX  /* as well as this                          */
 
 } chttps_log_level;
 
-  
+
 /* =========================================
  * HTTPS TYPES
  * ========================================= */
@@ -203,11 +220,12 @@ typedef struct sockaddr chttps_addr;
  */
 typedef struct
 {
-  const char* listen_ip;       /* The IP to listen from */
-  chttps_port_t port;          /* Port to listen from   */
-  chttps_log_level log_level;  /* Output log level */
-  int waiting_queue_size;      /* Waiting queue for new connections */
+  const char* listen_ip;       /* The IP to listen from              */
+  chttps_port_t port;          /* Port to listen from                */
+  chttps_log_level log_level;  /* Output log level                   */
+  int waiting_queue_size;      /* Waiting queue for new connections  */
   size_t max_connections;      /* Maximum number of open connections */
+  bool show_banner;            /* Show the banner at startup         */
 
 } chttps_config;
 
@@ -228,7 +246,7 @@ typedef struct
  */
 typedef struct
 {
-  size_t len;                  /* The len of the two arrays */
+  size_t len;                  /* The len of the two arrays    */
   chttps_client **clients;
   pthread_t *threads;          /* Thread ID of each connection */
   bool *is_available;
@@ -246,7 +264,7 @@ typedef struct
   chttps_router router;
 
 } chttps_server;
-  
+
 #ifdef __cplusplus
 }
 #endif

@@ -44,6 +44,14 @@ extern "C" {
 
 #endif
   
+#define chttps_handle_error(err) \
+  do { fprintf(stderr, "Error: %s\n", chttps_err_str(-err)); \
+    exit(EXIT_FAILURE); } while (0)
+
+#define chttps_handle_error_msg(err) \
+  do { fprintf(stderr, "Error: %s\n", err); \
+    exit(EXIT_FAILURE); } while (0)
+
 #define chttps_thread_handle_error(error) \
   do { \
     char message[255]; \

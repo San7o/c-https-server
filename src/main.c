@@ -27,33 +27,13 @@
 #include <signal.h>         /* UNIX signals       */
 
 #include <chttps/chttps.h>  /* Amalgamated header */
-#include <chttps/macros.h>
-
-#define chttps_handle_error(err) \
-  do { fprintf(stderr, "Error: %s\n", chttps_err_str(-err)); \
-    exit(EXIT_FAILURE); } while (0)
-#define handle_error(err) \
-  do { fprintf(stderr, "Error: %s\n", err); \
-    exit(EXIT_FAILURE); } while (0)
-
-
-void print_banner(void)
-{
-  char* banner =
-    "/*========================*\n"
-    " *      CHTTPS v0.0.1     *\n"
-    " *========================*/\n";
-  printf(banner);
-  return;
-}
+#include <chttps/daemon/args.h>
 
 /*
  * Deamon main
  */
-int main(void)
+int main(int argc, char** argv)
 {
-  print_banner();
-  
   /* Setup signals */
   int sig_err;
   const struct sigaction siga = {
@@ -61,12 +41,21 @@ int main(void)
   };
   sig_err = sigaction(SIGTERM, &siga, NULL);
   if (sig_err)
-    handle_error("sigaction");
+    chttps_handle_error_msg("sigaction");
+
+  /* Read configurations */
+  chttps_error err;
+  chttps_config conf = chttps_config_default();
+  err = chttps_parse_args(argc, argv, &conf);
+  if (err != CHTTPS_NO_ERROR)
+    chttps_handle_error(err);
+
+  if (conf.show_banner)
+    chttps_print_banner();
   
   /* Initialize server */
-  chttps_error err;
   chttps_server server = {};
-  err = chttps_server_init(&server, NULL);
+  err = chttps_server_init(&server, &conf);
   if (err != CHTTPS_NO_ERROR)
     chttps_handle_error(err);
 

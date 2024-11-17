@@ -37,9 +37,6 @@
 #define PORT 6970
 #define LOG_LEVEL CHTTPS_DEBUG
 
-#define chttps_handle_error(err) \
-  do { fprintf(stderr, "Error in test connection_add_remove: %s\n", chttps_err_str(-err)); \
-    exit(EXIT_FAILURE); } while (0)
 #define handle_error(err) \
   do { fprintf(stderr, "Error in test connection_add_remove: %s\n", err); \
     exit(EXIT_FAILURE); } while (0)

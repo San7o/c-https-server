@@ -36,9 +36,6 @@
 #define LISTEN_IP "0.0.0.0"
 #define PORT 6972
 
-#define chttps_handle_error(err) \
-  do { fprintf(stderr, "Error in test server_router_test: %s\n", chttps_err_str(-err)); \
-    exit(EXIT_FAILURE); } while (0)
 #define handle_error(err) \
   do { fprintf(stderr, "Error in test setver_router_test: %s\n", err); \
     exit(EXIT_FAILURE); } while (0)
