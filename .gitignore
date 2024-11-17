@@ -15,3 +15,8 @@ missing
 Makefile.in
 .deps
 .dirstamp
+config.sub
+depcomp
+config.guess
+libtool
+ltmain.sh

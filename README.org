@@ -68,7 +68,7 @@ This project uses autoconf for building. Run the following
 to build both the library and the daemon:
 
 #+BEGIN_SRC bash
-./configure   &&
+./configure &&
 make
 #+END_SRC bash
 
