@@ -96,6 +96,7 @@ void response_string(void)
   res.header.status_code = 200;
   strcpy(res.header.version, "1.0");
   res.body_len = 5;
+  res.body = malloc(6);
   strcpy(res.body, "hello");
 
   chttps_error err;
@@ -103,7 +104,7 @@ void response_string(void)
   err = chttps_create_response(&res, &out);
   if (err != CHTTPS_NO_ERROR)
     chttps_handle_error(err);
-  char *expected = "HTTP/1.0 200 OK\t\nhello";
+  char expected[] = "HTTP/1.0 200 OK\t\nhello";
   if (strncmp(out, expected, strlen(expected)) != 0)
     handle_error("Test 1: Wrong response");
   free(out);

@@ -86,10 +86,11 @@ static void *server(void*)
   printf("Server: Ready to receive message...\n");
   char received_message[255];
   strcpy(received_message, "");
-  const char *expected_message = "GET /api/greet HTTP/1.0\t\n";
+  const char *expected_message = "GET /api/greet HTTP/1.0\t\n\0";
   recv(client->cfd, received_message, 255, 0);
-  if (strcmp(received_message, expected_message) != 0)
+  if (strncmp(received_message, expected_message, strlen(expected_message)) != 0)
     {
+  fprintf(stdout, "Server: Message Received: %s\n", received_message);
       handle_error("Server: Message received is not the expected one");
     }
   fprintf(stdout, "Server: Done Reading\n");

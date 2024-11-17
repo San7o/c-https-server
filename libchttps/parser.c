@@ -71,7 +71,7 @@ chttps_error chttps_parse_request(char* request,
     return -CHTTPS_PARSE_WRONG_VERSION_ERROR;
   if (strlen(version) != 8 || strncmp(version, "HTTP/", 5))
     return -CHTTPS_PARSE_WRONG_VERSION_ERROR;
-  strncpy((*out)->header.version, version+5, 4);
+  strncpy((*out)->header.version, version+5, 3);
 
   return CHTTPS_NO_ERROR;
 }

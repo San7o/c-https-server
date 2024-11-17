@@ -64,11 +64,11 @@ following example:
 
 * Build
 
-The project currently uses a Makefile but will soon transition
-Its build system to Autoconf. For the mean time, run make to
-build both the library and the daemon
+This project uses autoconf for building. Run the following
+to build both the library and the daemon:
 
 #+BEGIN_SRC bash
+./configure   &&
 make
 #+END_SRC bash
 
@@ -90,7 +90,7 @@ work.
 
 The project is still in early developement, the
 following is a priority list with upcoming features:
-- autoconf: move to autoconf build system
+- SSL support: enable SSL via OpenSSL
 - request / response body: correctly read the body
   of a request
 - config file: parse the configs from a file

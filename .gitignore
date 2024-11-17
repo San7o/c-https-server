@@ -3,3 +3,15 @@
 *.o
 build
 generated_docs
+config.status
+configure
+config.log
+Makefile
+autom4te.cache/
+aclocal.m4
+compile
+install-sh
+missing
+Makefile.in
+.deps
+.dirstamp

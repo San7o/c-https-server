@@ -1,7 +1,7 @@
 PROJECT_DIR    = ${PWD}
-LIB_DIR        = ${PROJECT_DIR}/lib
+LIB_DIR        = ${PROJECT_DIR}/libchttps
 BUILD_DIR      = ${PROJECT_DIR}/build
-SOURCE_DIR     = ${PROJECT_DIR}/src
+SOURCE_DIR     = ${PROJECT_DIR}/chttpsd
 TESTS_DIR      = ${PROJECT_DIR}/test
 
 CC             = gcc
@@ -9,7 +9,7 @@ COMPILE_FLAGS  = -Wall -Wextra -Werror -Wno-unused-function -Wno-unused-paramete
 INCLUDE_FLAGS  = -I ${PROJECT_DIR}/include
 CCFLAGS        = ${COMPILE_FLAGS} ${INCLUDE_FLAGS}
 
-.PHONY: default builddir clean distclean
+.PHONY: default builddir clean distclean docs
 
 ## SHARED LIBRARY
 
@@ -71,6 +71,8 @@ test_server: ${BUILD_DIR}/libchttps.so  ${TESTS_DIR}/test_server.c
 
 ## UTILITIES
 
+docs:
+	doxygen ${PROJECT_DIR}/doxygen.conf
 clean:
 	rm $(BUILD_DIR)/*.o
 distclean:
