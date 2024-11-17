@@ -12,6 +12,8 @@ Accepted args:
             select port to listen to (default is 1234)
     --ip,-i
             select ip to listen to (default is 0.0.0.0)
+    --certs-dir,-cd
+            directory of cert.pem and key.pem certificates
     --log-level,-ll
             select the output log level. Options are:
             - DEBUG
@@ -64,7 +66,11 @@ following example:
 
 * Build
 
-This project uses autoconf for building. Run the following
+The library depends on the following:
+- OpenSSL for SSL support
+- Autotools for building
+
+This project uses autotools for building. Run the following
 to build both the library and the daemon:
 
 #+BEGIN_SRC bash
@@ -91,7 +97,6 @@ work.
 
 The project is still in early developement, the
 following is a priority list with upcoming features:
-- SSL support: enable SSL via OpenSSL
 - request / response body: correctly read the body
   of a request
 - config file: parse the configs from a file

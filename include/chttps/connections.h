@@ -29,6 +29,7 @@
 #include <string.h>         /* strcpy        */
 #include <stdio.h>          /* printing      */
 #include <pthread.h>        /* pthread_setcancelstate */
+#include <unistd.h>         /* close         */
 
 #include <chttps/types.h>
 #include <chttps/logger.h>
@@ -145,12 +146,14 @@ static void *chttps_connection_thread(void* args)
     chttps_thread_handle_error_msg("Thread send");
   
   /* Cleanup */
-  chttps_server_close(info.server);
   if (err != CHTTPS_NO_ERROR)
     chttps_thread_handle_error(err);
   free(res_str);
   free(req);
   free(out);
+  SSL_shutdown(info.client->ssl);
+  SSL_free(info.client->ssl);
+  close(info.client->cfd);
   chttps_remove_connection(&(info.server->connections), info.client);
   return NULL;
 }

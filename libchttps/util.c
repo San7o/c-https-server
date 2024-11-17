@@ -88,14 +88,29 @@ char* chttps_err_str(chttps_error err)
       return "CHTTPS_MISSING_ARGUMENT_IP_ERROR";
     case CHTTPS_MISSING_ARGUMENT_LOG_LEVEL_ERROR:
       return "CHTTPS_MISSING_ARGUMENT_LOG_LEVEL_ERROR";
+    case CHTTPS_MISSING_ARGUMENT_CERTS_DIR_ERROR:
+      return "CHTTPS_MISSING_ARGUMENT_CERTS_DIR_ERROR";
     case CHTTPS_INVALID_ARGUMENT_PORT_ERROR:
       return "CHTTPS_INVALID_ARGUMENT_PORT_ERROR";
     case CHTTPS_INVALID_ARGUMENT_IP_ERROR:
       return "CHTTPS_INVALID_ARGUMENT_IP_ERROR";
     case CHTTPS_INVALID_ARGUMENT_LOG_LEVEL_ERROR:
       return "CHTTPS_INVALID_ARGUMENT_LOG_LEVEL_ERROR";
+    case CHTTPS_INVALID_ARGUMENT_CERTS_DIR_ERROR:
+      return "CHTTPS_INVALID_ARGUMENT_CERTS_DIR_ERROR";
+    case CHTTPS_INVALID_ARGUMENT_CERTS_DIR_LEN_ERROR:
+      return "CHTTPS_INVALID_ARGUMENT_CERTS_DIR_LEN_ERROR";
     case CHTTPS_UNKNOWN_ARGUMENT_ERROR:
       return "CHTTPS_UNKNOWN_ARGUMENT_ERROR";
+    case CHTTPS_SSL_CONTEXT_CREATION_ERROR:
+      return "CHTTPS_SSL_CONTEXT_CREATION_ERROR";
+
+    case CHTTPS_SSL_CERTIFICATE_ERROR:
+      return "CHTTPS_SSL_CERTIFICATE_ERROR";
+    case CHTTPS_SSL_KEY_ERROR:
+      return "CHTTPS_SSL_KEY_ERROR";
+    case CHTTPS_SSL_ACCEPT_ERROR:
+      return "CHTTPS_SSL_ACCEPT_ERROR";
     default:
       return "ERROR_NOT_RECOGNISED";
     }
@@ -171,5 +186,6 @@ chttps_config chttps_config_default()
     .max_connections        = 1024,
     .show_banner            = true,
   };
+  strcpy(conf.certs_dir, "/etc/ssl/private");
   return conf;
 }

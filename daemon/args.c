@@ -46,6 +46,8 @@ void chttps_print_help(void)
   printf("            select port to listen to (default is 1234)\n");
   printf("    --ip,-i\n");
   printf("            select ip to listen to (default is 0.0.0.0)\n");
+  printf("    --certs-dir,-cd\n");
+  printf("            directory of cert.pem and key.pem certificates\n");
   printf("    --log-level,-ll\n");
   printf("            select the output log level. Options are:\n");
   printf("            - DEBUG\n");
@@ -100,6 +102,24 @@ chttps_error chttps_parse_args(int argc, char**argv, chttps_config *conf)
 	  else
 	    {
 	      return -CHTTPS_MISSING_ARGUMENT_IP_ERROR;
+	    }
+	}
+      else if ((strcmp(arg, "--certs-dir") == 0) ||
+	       (strcmp(arg, "-cd") == 0))
+	{
+	  if (i + 1 < argc)
+	    {
+	      char* certs_dir = argv[i+1];
+	      if (certs_dir == NULL)
+		return -CHTTPS_INVALID_ARGUMENT_CERTS_DIR_ERROR;
+	      if (strlen(certs_dir) >= CHTTPS_MAX_STRING_SIZE - 10)
+		return -CHTTPS_INVALID_ARGUMENT_CERTS_DIR_LEN_ERROR;
+	      strcpy(conf->certs_dir, argv[i+1]);
+	      ++i;
+	    }
+	  else
+	    {
+	      return -CHTTPS_MISSING_ARGUMENT_CERTS_DIR_ERROR;
 	    }
 	}
       else if ((strcmp(arg, "--log-level") == 0) ||

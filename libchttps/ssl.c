@@ -22,39 +22,42 @@
  * SOFTWARE.
  */
 
-#ifndef _CHTTPS_DAEMON_ARGS_H
-#define _CHTTPS_DAEMON_ARGS_H
+#include <chttps/ssl.h>
 
-#include <string.h>         /* strcmp        */
-#include <stdio.h>          /* printing      */
+chttps_error chttps_ssl_create_context(SSL_CTX **ctx)
+{
+  if (!ctx)
+    return -CHTTPS_SSL_CONTEXT_CREATION_ERROR;
+  const SSL_METHOD *method;
+  method = TLS_server_method();
 
-#include <chttps/types.h>
-#include <chttps/util.h>
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-void chttps_print_banner(void);
-
-void chttps_print_help(void);
-
-/**
- * Takes an initialized chttps_config and modifies it based
- * on the arguments.
- * Accepted args:
- * - --port,-p
- * - --ip,-i
- * - --certs-dir,-cd
- * - --log-level,-ll
- * - --no-banner,-nb
- * - --help,-h
- */
-chttps_error chttps_parse_args(int argc, char** argv,
-			       chttps_config *conf);
-
-#ifdef __cplusplus
+  *ctx = SSL_CTX_new(method);
+  if (!(*ctx))
+    return -CHTTPS_SSL_CONTEXT_CREATION_ERROR;
+  return CHTTPS_NO_ERROR;
 }
-#endif
 
-#endif
+chttps_error chttps_ssl_configure_context(SSL_CTX *ctx, chttps_config *conf)
+{
+  char cert_path[CHTTPS_MAX_STRING_SIZE];
+  strcpy(cert_path, conf->certs_dir);
+  strcat(cert_path, "/cert.pem");
+  if (SSL_CTX_use_certificate_file(ctx, cert_path, SSL_FILETYPE_PEM) <= 0)
+    return -CHTTPS_SSL_CERTIFICATE_ERROR;
+  strcpy(cert_path, conf->certs_dir);
+  strcat(cert_path, "/key.pem");
+  if (SSL_CTX_use_PrivateKey_file(ctx, cert_path, SSL_FILETYPE_PEM) <= 0)
+    return -CHTTPS_SSL_KEY_ERROR;
+  return CHTTPS_NO_ERROR;
+}
+
+chttps_error chttps_ssl_connection(SSL_CTX *ctx,
+				   chttps_client *client,
+				   SSL **ssl)
+{
+  *ssl = SSL_new(ctx);
+  SSL_set_fd(*ssl, client->cfd);
+  if (SSL_accept(*ssl) <= 0)
+    return -CHTTPS_SSL_ACCEPT_ERROR;
+  return CHTTPS_NO_ERROR;
+}

@@ -22,3 +22,4 @@ depcomp
 config.guess
 libtool
 ltmain.sh
+certs

@@ -34,6 +34,7 @@
 #include <chttps/util.h>
 #include <chttps/connections.h>
 #include <chttps/router.h>
+#include <chttps/ssl.h>
 
 chttps_error chttps_server_init(chttps_server *server,
                                 chttps_config *conf)
@@ -44,13 +45,25 @@ chttps_error chttps_server_init(chttps_server *server,
   if (conf == NULL)
   {
     chttps_config default_config = chttps_config_default();
-    memcpy(&server->conf, &default_config, sizeof(chttps_config));
+    memcpy(&(server->conf), &default_config, sizeof(chttps_config));
   }
   else
   {
-    memcpy(&server->conf, conf, sizeof(chttps_config));
+    memcpy(&(server->conf), conf, sizeof(chttps_config));
   }
    
+  chttps_error err;
+  SSL_CTX *ctx;
+  err = chttps_ssl_create_context(&ctx);
+  if (err != CHTTPS_NO_ERROR)
+    return err;
+
+  err = chttps_ssl_configure_context(ctx, &(server->conf));
+  if (err != CHTTPS_NO_ERROR)
+    return err;
+
+  server->context = ctx;
+  
   server->sfd = socket(AF_INET, SOCK_STREAM, 0); /* tcp socket */
   if (server->sfd == 0) 
     return -CHTTPS_SOCKET_ERROR;
@@ -96,6 +109,13 @@ chttps_error chttps_server_listen(chttps_server *server,
 		   &client_addr_len);
   if ((*client)->cfd == -1)
     return -CHTTPS_ACCEPT_CONNECTION_ERROR;
+
+  chttps_error err;
+  SSL *ssl;
+  err = chttps_ssl_connection(server->context, (*client), &ssl);
+  if (err != CHTTPS_NO_ERROR)
+    return err;
+  (*client)->ssl = ssl;
   
   chttps_info("New client connected", &server->conf);
   return CHTTPS_NO_ERROR;
@@ -118,6 +138,8 @@ chttps_error chttps_server_close(chttps_server *server)
   if (close(server->sfd) == -1)
     return -CHTTPS_CLOSE_SERVER_SOCKET_ERROR;
 
+  SSL_CTX_free(server->context);
+  
   chttps_info("Server closed", &server->conf);
   return CHTTPS_NO_ERROR;
 }

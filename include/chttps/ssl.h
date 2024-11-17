@@ -22,52 +22,33 @@
  * SOFTWARE.
  */
 
-#ifndef _CHTTPS_MACROS_H
-#define _CHTTPS_MACROS_H
+#ifndef _CHTTPS_SSL_H
+#define _CHTTPS_SSL_H
+
+#include <chttps/types.h>
+#include <openssl/ssl.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#ifdef DEBUG  
+/**
+ * chttps_ssl_create_context and
+ * chttps_ssl_configure_context handle the setup
+ * of the SSL server.
+ */
+chttps_error chttps_ssl_create_context(SSL_CTX **ctx);
+chttps_error chttps_ssl_configure_context(SSL_CTX *ctx,
+					  chttps_config *conf);
 
-#include <stdio.h>      /* printf */
-#include <stdlib.h>     /* malloc & free */
-
-#define malloc(...) \
-  malloc(__VA_ARGS__); \
-  printf("Malloc at file: %s, line: %d\n", __FILE__, __LINE__)
-
-#define free(...) \
-  free(__VA_ARGS__); \
-  printf("Free at file: %s, line: %d\n", __FILE__, __LINE__)
-
-#endif // DEBUG
-
-#define CHTTPS_UNUSED(x) (void)(x)
+/**
+ * Call chttps_ssl_connection on a new socket to
+ * initialize a SSL connection.
+ */
+chttps_error chttps_ssl_connection(SSL_CTX *ctx,
+				   chttps_client *client,
+				   SSL **ssl);
   
-#define chttps_handle_error(err) \
-  do { fprintf(stderr, "Error: %s\n", chttps_err_str(-err)); \
-    exit(EXIT_FAILURE); } while (0)
-
-#define chttps_handle_error_msg(err) \
-  do { fprintf(stderr, "Error: %s\n", err); \
-    exit(EXIT_FAILURE); } while (0)
-
-#define chttps_thread_handle_error(error) \
-  do { \
-    char message[255]; \
-    sscanf(message, "Error in execution thread: %s\n", chttps_err_str(-error)); \
-    chttps_err(message, &(info.server->conf));			\
-    pthread_exit((void*)error); } while (0)
-  
-#define chttps_thread_handle_error_msg(...) \
-  do { \
-    char err[255]; \
-    sscanf(err, "Error in execution thread: %s\n", __VA_ARGS__);		\
-    chttps_err(err, &(info.server->conf));			\
-    pthread_exit(NULL); } while (0)
-
 #ifdef __cplusplus
 }
 #endif

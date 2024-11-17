@@ -57,6 +57,7 @@ static void *server(void*)
   config.log_level          = CHTTPS_DISABLED;
   config.listen_ip          = LISTEN_IP;
   config.port               = PORT;
+  strcpy(config.certs_dir, "./certs");
   chttps_server my_server = {};
   err = chttps_server_init(&my_server, &config);
   if (err != CHTTPS_NO_ERROR)

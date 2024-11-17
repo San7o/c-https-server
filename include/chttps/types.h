@@ -28,6 +28,7 @@
 #include <netinet/in.h>  /* in_port_t   */
 #include <sys/socket.h>  /* sockaddr_in */ 
 #include <stdbool.h>     /* for bools   */
+#include <openssl/ssl.h>
 
 #define CHTTPS_MAX_STRING_SIZE 255
 #define CHTTPS_MAX_ROUTES 255
@@ -76,10 +77,17 @@ typedef enum
   CHTTPS_MISSING_ARGUMENT_PORT_ERROR,
   CHTTPS_MISSING_ARGUMENT_IP_ERROR,
   CHTTPS_MISSING_ARGUMENT_LOG_LEVEL_ERROR,
+  CHTTPS_MISSING_ARGUMENT_CERTS_DIR_ERROR,
   CHTTPS_INVALID_ARGUMENT_PORT_ERROR,
   CHTTPS_INVALID_ARGUMENT_IP_ERROR,
   CHTTPS_INVALID_ARGUMENT_LOG_LEVEL_ERROR,
+  CHTTPS_INVALID_ARGUMENT_CERTS_DIR_ERROR,
+  CHTTPS_INVALID_ARGUMENT_CERTS_DIR_LEN_ERROR,
   CHTTPS_UNKNOWN_ARGUMENT_ERROR,
+  CHTTPS_SSL_CONTEXT_CREATION_ERROR,
+  CHTTPS_SSL_CERTIFICATE_ERROR,
+  CHTTPS_SSL_KEY_ERROR,
+  CHTTPS_SSL_ACCEPT_ERROR,
   _CHTTPS_ERROR_MAX
 
 } chttps_error;
@@ -226,6 +234,8 @@ typedef struct
   int waiting_queue_size;      /* Waiting queue for new connections  */
   size_t max_connections;      /* Maximum number of open connections */
   bool show_banner;            /* Show the banner at startup         */
+  /* Directory of cert.pem and key.pem  */
+  char certs_dir[CHTTPS_MAX_STRING_SIZE - 10];
 
 } chttps_config;
 
@@ -235,6 +245,7 @@ typedef struct
 typedef struct
 {
   int cfd;                     /* Client file descriptor */
+  SSL *ssl;                    /* SSL file descriptor    */
   chttps_addr addr;            /* Client address struct  */
 
 } chttps_client;
@@ -262,6 +273,7 @@ typedef struct
   chttps_config conf;          /* Server configuration   */
   chttps_connections connections; /* List of active/inactive connections */
   chttps_router router;
+  SSL_CTX *context;            /* The SSL context         */
 
 } chttps_server;
 

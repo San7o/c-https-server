@@ -10,7 +10,9 @@ AM_CFLAGS      = @CFLAGS@ -Wall -Wextra -Werror  \
 		  -Wno-unused-parameter          \
                   -Wno-unused-variable           \
 		  -Wno-int-to-pointer-cast       \
-                  -Wno-format -pthread
+                  -Wno-format -pthread           \
+                  @OPENSSL_CFLAGS@
+LDADD          = @OPENSSL_LIBS@
 PREFIX         = @prefix@
 ACLOCAL_AMFLAGS = -I m4 
 
@@ -24,23 +26,27 @@ libchttps_la_SOURCES = ${LIB_DIR}/connections.c  \
                        ${LIB_DIR}/router.c       \
                        ${LIB_DIR}/server.c       \
                        ${LIB_DIR}/signals.c      \
+                       ${LIB_DIR}/ssl.c          \
                        ${LIB_DIR}/util.c
-libchttps_la_CPPFLAGS = -I${PROJECT_DIR}/include
+libchttps_la_CFLAGS = -I${PROJECT_DIR}/include   \
+                      -lssl -lcrypto
 
-# =================== DAEMON ================== #
+# =================== DAEMON =================== #
 
 bin_PROGRAMS      = chttpsd test_server
 chttpsd_SOURCES   = ${DAEMON_DIR}/args.c         \
                     ${DAEMON_DIR}/main.c
-chttpsd_CPPFLAGS  = -I${PROJECT_DIR}/include
+chttpsd_CFLAGS    = -I${PROJECT_DIR}/include     \
+                    -lssl -lcrypto
 chttpsd_LDADD     = libchttps.la
 
 # A test server to play with
 test_server_SOURCES    = ${TESTS_DIR}/test_server.c
-test_server_CPPFLAGS   = -I ${PROJECT_DIR}/include
+test_server_CFLAGS   = -I ${PROJECT_DIR}/include \
+                       -lssl -lcrypto
 test_server_LDADD      = libchttps.la
 
-# =================== TESTS =================== #
+# =================== TESTS ==================== #
 
 check_PROGRAMS    = test_conenction_add_remove   \
                     test_parse                   \
@@ -54,17 +60,22 @@ test_router_SOURCES                = ${TESTS_DIR}/router_test.c
 test_server_router_SOURCES         = ${TESTS_DIR}/server_router_test.c
 test_socket_connection_SOURCES     = ${TESTS_DIR}/socket_connection.c
 
-test_conenction_add_remove_CPPFLAGS = -I ${PROJECT_DIR}/include
-test_parse_CPPFLAGS                 = -I ${PROJECT_DIR}/include
-test_router_CPPFLAGS                = -I ${PROJECT_DIR}/include
-test_server_router_CPPFLAGS         = -I ${PROJECT_DIR}/include
-test_socket_connection_CPPFLAGS     = -I ${PROJECT_DIR}/include
+test_conenction_add_remove_CFLAGS  = -I ${PROJECT_DIR}/include \
+                                     -lssl -lcrypto
+test_parse_CFLAGS                  = -I ${PROJECT_DIR}/include \
+                                     -lssl -lcrypto
+test_router_CFLAGS                 = -I ${PROJECT_DIR}/include \
+                                     -lssl -lcrypto
+test_server_router_CFLAGS          = -I ${PROJECT_DIR}/include \
+                                     -lssl -lcrypto
+test_socket_connection_CFLAGS      = -I ${PROJECT_DIR}/include \
+                                     -lssl -lcrypto
 
-test_conenction_add_remove_LDADD = libchttps.la
-test_parse_LDADD                 = libchttps.la
-test_router_LDADD                = libchttps.la
-test_server_router_LDADD         = libchttps.la
-test_socket_connection_LDADD     = libchttps.la
+test_conenction_add_remove_LDADD   = libchttps.la
+test_parse_LDADD                   = libchttps.la
+test_router_LDADD                  = libchttps.la
+test_server_router_LDADD           = libchttps.la
+test_socket_connection_LDADD       = libchttps.la
 
 check: ${check_PROGRAMS}
 	@for test in ${check_PROGRAMS}; do \

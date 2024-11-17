@@ -66,7 +66,9 @@ chttps_error chttps_connections_free(chttps_connections *connections)
 
   for (size_t i = 0; i < connections->len; ++i)
       if (!connections->is_available[i])
-	free(connections->clients[i]);
+	{
+	  free(connections->clients[i]);
+	}
 
   free(connections->clients);
   free(connections->is_available);
