@@ -9,21 +9,21 @@ Usage:
 
 Accepted args:
     --port,-p
-        select port to listen to (default is 1234)
+            select port to listen to (default is 1234)
     --ip,-i
-        select ip to listen to (default is 0.0.0.0)
+            select ip to listen to (default is 0.0.0.0)
     --log-level,-ll
-        select the output log level. Options are:
-        - DEBUG
-        - INFO (DEFAULT)
-        - WARNING
-        - ERROR
-        - OUTPUT
-        - DISABLED
+            select the output log level. Options are:
+            - DEBUG
+            - INFO (DEFAULT)
+            - WARNING
+            - ERROR
+            - OUTPUT
+            - DISABLED
     --no-banner,-np
-        do not show banner at startup (default true)
+            do not show banner at startup (default true)
     --help,-h
-        show this message
+            show this message
 #+END_SRC
 
 Chttps is an implementation of a TCP/IP + TLS
@@ -68,6 +68,7 @@ This project uses autoconf for building. Run the following
 to build both the library and the daemon:
 
 #+BEGIN_SRC bash
+./autogen.sh &&
 ./configure &&
 make
 #+END_SRC bash

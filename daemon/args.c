@@ -43,21 +43,21 @@ void chttps_print_help(void)
   printf("  chttpsd [args...]\n\n");
   printf("Accepted args:\n");
   printf("    --port,-p\n");
-  printf("        select port to listen to (default is 1234)\n");
+  printf("            select port to listen to (default is 1234)\n");
   printf("    --ip,-i\n");
-  printf("        select ip to listen to (default is 0.0.0.0)\n");
+  printf("            select ip to listen to (default is 0.0.0.0)\n");
   printf("    --log-level,-ll\n");
-  printf("        select the output log level. Options are:\n");
-  printf("        - DEBUG\n");
-  printf("        - INFO (DEFAULT)\n");
-  printf("        - WARNING\n");
-  printf("        - ERROR\n");
-  printf("        - OUTPUT\n");
-  printf("        - DISABLED\n");
+  printf("            select the output log level. Options are:\n");
+  printf("            - DEBUG\n");
+  printf("            - INFO (DEFAULT)\n");
+  printf("            - WARNING\n");
+  printf("            - ERROR\n");
+  printf("            - OUTPUT\n");
+  printf("            - DISABLED\n");
   printf("    --no-banner,-np\n");
-  printf("        do not show banner at startup (default true)\n");
+  printf("            do not show banner at startup (default true)\n");
   printf("    --help,-h\n");
-  printf("        show this message\n");
+  printf("            show this message\n");
   exit(0);
 }
 

@@ -1,6 +1,8 @@
 *~
 *.out
 *.o
+*.lo
+.libs
 build
 generated_docs
 config.status
